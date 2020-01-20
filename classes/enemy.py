@@ -6,8 +6,24 @@ import pygame, os
 class Rocket(Collidable):
 
     def __init__(self, posx, posy, width, height):
-        Collidable.__init__(self,posx,posy,width,height)
+        Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 3
+        self.launchcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+
+        #load images
+        self.frames = [pygame.image.load(get_file_path("i","rocket" + "/rocket" + str(n) + ".png")) for n in range(5)]
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL1.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL2.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL3.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL4.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL5.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL6.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL7.png")),
+                    #pygame.image.load(get_file_path("i",imagepath + "/EL8.png"))]
+
+        self.image.blit(self.frames[0], (0,0))
 
     """
     def draw(self,view):
@@ -30,5 +46,19 @@ class Rocket(Collidable):
         #pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
         """
 
+    def draw(self,view):
+        print("Drawing")
+        self.draw(view)
+
     def move(self):
-        self.rect.y += self.vel
+        print("moving")
+        self.launchcounter += 1
+        if self.launchcounter > 30:
+            if self.launchcounter - 30 < 5:
+                #animage the launch
+                self.image.blit(self.frames[self.launchcounter-30], (0,0))
+            self.rect.y -= self.vel
+
+    #Animate the explosion
+    def die(self):
+        pass

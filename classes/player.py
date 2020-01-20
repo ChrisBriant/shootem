@@ -187,6 +187,15 @@ class Player(pygame.sprite.Sprite):
             yoffset = 0
         return yoffset
 
+    #Detect screen catching player
+    def catchscreen(self, xoffset):
+        xoffset = xoffset*-1
+        print(xoffset, ",",self.rect.x)
+        if self.rect.x < xoffset:
+            return True
+        else:
+            return False
+
     #Routine for player death
     def die(self):
         if not self.dead:

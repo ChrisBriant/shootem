@@ -1,13 +1,15 @@
 from include import get_file_path, collideontop
 import pygame, os
 
-class collidable(pygame.sprite.Sprite):
+class Collidable(pygame.sprite.Sprite):
 
-    def __init__(self, posx, posy, width, height):
+    def __init__(self, posx, posy, width, height,movable=False):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((width, height))
 
         self.image.fill((0,255,0))
+
+        self.movable = movable
 
         self.rect = self.image.get_rect()
         self.rect.x = posx

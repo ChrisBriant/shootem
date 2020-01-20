@@ -1,6 +1,6 @@
 from classes.player import Player
-from classes.enemy import Enemy
-from classes.collidables import collidable
+from classes.enemy import Rocket
+from classes.collidables import Collidable
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
 import pygame, os
@@ -98,7 +98,7 @@ def redrawGameWindow(totalscore):
     pygame.display.update()
 
 
-xplayerstartpos = 0
+xplayerstartpos = 200
 yplayerstartpos = 0
 ship = Player(xplayerstartpos, yplayerstartpos, 50,50)
 
@@ -160,6 +160,8 @@ map = GameMap(gamearea,screen)
 map.addcollidable(100,100,100,100)
 map.addcollidable(1500,200,100,100)
 map.addcollidable(1600,400,100,100)
+map.addenemy(Rocket(800,540,30,60))
+map.addenemy(Rocket(1400,540,30,60))
 #colidegroup = pygame.sprite.Group(collidable)
 
 #group containing player and platforms
@@ -218,6 +220,9 @@ while run:
     redrawGameWindow(0)
     #Detect collidion
     if map.collision(ship):
+        ship.die()
+    #Ship collides with the left of the screen
+    if ship.catchscreen(xoffset):
         ship.die()
     #For scrolling
     #side scrolling
