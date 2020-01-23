@@ -51,7 +51,6 @@ class Rocket(Collidable):
         self.draw(view)
 
     def move(self):
-        print("moving")
         self.launchcounter += 1
         if self.launchcounter > 30:
             if self.launchcounter - 30 < 5:

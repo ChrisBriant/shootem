@@ -1,25 +1,11 @@
 from include import get_file_path, collideontop
+from .projectiles import Projectile
 import pygame, os
 
 class Player(pygame.sprite.Sprite):
-    walkRight = [pygame.image.load(get_file_path("i","R1.png")),
-                pygame.image.load(get_file_path("i","R2.png")),
-                pygame.image.load(get_file_path("i","R3.png")),
-                pygame.image.load(get_file_path("i","R4.png")),
-                pygame.image.load(get_file_path("i","R5.png")),
-                pygame.image.load(get_file_path("i","R6.png")),
-                pygame.image.load(get_file_path("i","R7.png")),
-                pygame.image.load(get_file_path("i","R8.png")),
-                pygame.image.load(get_file_path("i","R9.png"))]
-    walkLeft = [pygame.image.load(get_file_path("i","L1.png")),
-                pygame.image.load(get_file_path("i","L2.png")),
-                pygame.image.load(get_file_path("i","L3.png")),
-                pygame.image.load(get_file_path("i","L4.png")),
-                pygame.image.load(get_file_path("i","L5.png")),
-                pygame.image.load(get_file_path("i","L6.png")),
-                pygame.image.load(get_file_path("i","L7.png")),
-                pygame.image.load(get_file_path("i","L8.png")),
-                pygame.image.load(get_file_path("i","L9.png"))]
+    moveForward = [pygame.image.load(get_file_path("i","shipf" + "/shipf" + str(n) + ".png")) for n in range(9)]
+    moveBack = [pygame.image.load(get_file_path("i","shipr" + "/shipr" + str(n) + ".png")) for n in range(9)]
+
     deathSeq = [pygame.image.load(get_file_path("i","D1.png")),
                 pygame.image.load(get_file_path("i","D2.png")),
                 pygame.image.load(get_file_path("i","D3.png")),
@@ -70,6 +56,8 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey((255,255,255))
 
         if self.walkCount + 1 > 9:
+            self.walkCount = 7
+        if self.standing:
             self.walkCount = 0
 
         if self.dead:
@@ -86,16 +74,16 @@ class Player(pygame.sprite.Sprite):
             #Normal movement
             if not(self.standing):
                 if self.left:
-                    self.image.blit(self.walkLeft[self.walkCount], (0,0))
+                    self.image.blit(self.moveBack[self.walkCount], (0,0))
                     self.walkCount += 1
                 elif self.right:
-                    self.image.blit(self.walkRight[self.walkCount], (0,0))
+                    self.image.blit(self.moveForward[self.walkCount], (0,0))
                     self.walkCount +=1
             else:
                 if self.right:
-                    self.image.blit(self.walkRight[0], (0,0))
+                    self.image.blit(self.moveForward[0], (0,0))
                 else:
-                    self.image.blit(self.walkLeft[0], (0,0))
+                    self.image.blit(self.moveBack[0], (0,0))
         view.blit(self.image,(self.rect.x,self.rect.y))
 
     def moveleft(self):
@@ -131,7 +119,7 @@ class Player(pygame.sprite.Sprite):
         self.standing = False
 
 
-    def moveplayer(self,keys,screen, gamearea):
+    def moveplayer(self,keys,screen, gamearea,map):
         if self.dead:
             #Move player up and then off the screen
             if self.death_drop_count > 0:
@@ -149,6 +137,9 @@ class Player(pygame.sprite.Sprite):
                 self.moveup()
             elif keys[pygame.K_DOWN] and self.rect.y < gamearea["h"] - self.height:
                 self.movedown()
+            elif keys[pygame.K_SPACE]:
+                map.addprojectile(Projectile(self.rect.x + self.width, self.rect.y + (self.height / 2), 20,5))
+                print(map.gamearea)
             else:
                 self.standing = True
                 self.walkCount = 0

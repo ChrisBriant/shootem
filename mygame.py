@@ -100,7 +100,7 @@ def redrawGameWindow(totalscore):
 
 xplayerstartpos = 200
 yplayerstartpos = 0
-ship = Player(xplayerstartpos, yplayerstartpos, 50,50)
+ship = Player(xplayerstartpos, yplayerstartpos, 60,30)
 
 """
 platform1 = Platform(100,50,60,20)
@@ -156,7 +156,7 @@ platformgroup = pygame.sprite.Group(platform1,platform2,platform3,platform4,plat
 
 
 #Create Level
-map = GameMap(gamearea,screen)
+map = GameMap(gamearea,screen, ship)
 map.addcollidable(100,100,100,100)
 map.addcollidable(1500,200,100,100)
 map.addcollidable(1600,400,100,100)
@@ -216,10 +216,10 @@ while run:
         shootLoop = 1
         """
     #Move player if up, left, or right keys pressed
-    ship.moveplayer(keys, screen, gamearea)
+    ship.moveplayer(keys, screen, gamearea, map)
     redrawGameWindow(0)
     #Detect collidion
-    if map.collision(ship):
+    if map.collision():
         ship.die()
     #Ship collides with the left of the screen
     if ship.catchscreen(xoffset):
@@ -239,7 +239,7 @@ while run:
         if keys[pygame.K_SPACE]:
             lives = self.lives
             deathpos = list(ship.deathpos)
-            ship = Player(deathpos[0], deathpos[1], 30,50,lives)
+            ship = Player(deathpos[0], deathpos[1], 60,30,lives)
     #print(ship.rect.x,",", ship.rect.y," offset=", yoffset,"---", ship.calculateyoffset(screen,gamearea))
 
 pygame.quit()
