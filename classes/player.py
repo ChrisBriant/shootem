@@ -6,15 +6,7 @@ class Player(pygame.sprite.Sprite):
     moveForward = [pygame.image.load(get_file_path("i","shipf" + "/shipf" + str(n) + ".png")) for n in range(9)]
     moveBack = [pygame.image.load(get_file_path("i","shipr" + "/shipr" + str(n) + ".png")) for n in range(9)]
 
-    deathSeq = [pygame.image.load(get_file_path("i","D1.png")),
-                pygame.image.load(get_file_path("i","D2.png")),
-                pygame.image.load(get_file_path("i","D3.png")),
-                pygame.image.load(get_file_path("i","D4.png")),
-                pygame.image.load(get_file_path("i","D5.png")),
-                pygame.image.load(get_file_path("i","D6.png")),
-                pygame.image.load(get_file_path("i","D7.png")),
-                pygame.image.load(get_file_path("i","D8.png")),
-                pygame.image.load(get_file_path("i","D9.png"))]
+    deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(20)]
     # Constructor. Pass in the color of the block,
     # and its x and y position
     def __init__(self, x, y, width, height, lives=3):
@@ -46,6 +38,7 @@ class Player(pygame.sprite.Sprite):
        self.deathCount = 0
        self.death_drop_count = 5
        self.deathpos = (0,0)
+       self.rateoffirecount = 0
 
 
     def hit(self):
@@ -63,11 +56,12 @@ class Player(pygame.sprite.Sprite):
         if self.dead:
             #Animate death sequence
             #increase image size first
-            self.image = pygame.transform.scale(self.image,(40,50))
-            self.image.fill((255,255,255))
-            self.image.set_colorkey((255,255,255))
+            self.image = pygame.transform.scale(self.image,(50,50))
+            #self.image.fill((255,255,255))
+            #self.image.set_colorkey((255,255,255))
+            self.image.blit(self.moveForward[0], (0,0))
             self.image.blit(self.deathSeq[self.deathCount], (0,0))
-            if self.deathCount < 8:
+            if self.deathCount < 19:
                 print(self.deathCount)
                 self.deathCount += 1
         else:
@@ -138,8 +132,13 @@ class Player(pygame.sprite.Sprite):
             elif keys[pygame.K_DOWN] and self.rect.y < gamearea["h"] - self.height:
                 self.movedown()
             elif keys[pygame.K_SPACE]:
-                map.addprojectile(Projectile(self.rect.x + self.width, self.rect.y + (self.height / 2), 20,5))
-                print(map.gamearea)
+                if self.rateoffirecount <= 0:
+                    map.addprojectile(Projectile(self.rect.x + self.width, self.rect.y + (self.height / 2), 20,5))
+                    self.rateoffirecount = 4
+                    #print(map.gamearea)
+                else:
+                    #Control rate of fire
+                    self.rateoffirecount -= 1
             else:
                 self.standing = True
                 self.walkCount = 0

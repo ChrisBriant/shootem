@@ -10,6 +10,9 @@ class Collidable(pygame.sprite.Sprite):
         self.image.fill((0,255,0))
 
         self.movable = movable
+        self.destructable = False
+        self.points = 0
+        self.strength = 0
 
         self.rect = self.image.get_rect()
         self.rect.x = posx
@@ -24,3 +27,13 @@ class Collidable(pygame.sprite.Sprite):
             return True
         else:
             return False
+
+    #Method not used at the moment
+    def isdeleteable(xoffset):
+        if self.rect.x - 10 > xoffset:
+            return True
+        else:
+            return False
+
+    def hit(self):
+        print("Hit")

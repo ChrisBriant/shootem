@@ -1,5 +1,5 @@
 from classes.player import Player
-from classes.enemy import Rocket
+from classes.enemy import Rocket, Scobot, ScobotGroup
 from classes.collidables import Collidable
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
@@ -82,7 +82,9 @@ def redrawGameWindow(totalscore):
         ship.draw(view)
         #alien1.draw(view)
         #platformgroup.draw(view)
-        map.getcollidables(xoffset).draw(view)
+        onscreensprites = map.getcollidables(xoffset)
+        onscreensprites.draw(view)
+        map.updatecollidables(onscreensprites)
     win.blit(view,(xoffset,yoffset))
     #goblin.draw(win)
     for bullet in bullets:
@@ -162,6 +164,15 @@ map.addcollidable(1500,200,100,100)
 map.addcollidable(1600,400,100,100)
 map.addenemy(Rocket(800,540,30,60))
 map.addenemy(Rocket(1400,540,30,60))
+"""
+map.addenemy(Scobot(400,100,20,30))
+map.addenemy(Scobot(600,200,20,30))
+map.addenemy(Scobot(1000,100,20,30))
+map.addenemy(Scobot(1200,200,20,30))
+map.addenemy(Scobot(1200,400,20,30))
+map.addenemy(Scobot(1200,450,20,30))
+"""
+map.addenemygroup(ScobotGroup(800,300,5))
 #colidegroup = pygame.sprite.Group(collidable)
 
 #group containing player and platforms
@@ -180,15 +191,18 @@ ship.draw(win)
 while run:
     clock.tick(27)
 
+    """
     if shootLoop > 0:
         shootLoop += 1
     if shootLoop > 3:
         shootLoop = 0
+        """
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
+    """
     for bullet in bullets:
         if  bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
             if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
@@ -199,6 +213,7 @@ while run:
             bullet.x += bullet.vel
         else:
             bullets.pop(bullets.index(bullet))
+            """
 
     keys = pygame.key.get_pressed()
 
