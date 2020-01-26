@@ -1,5 +1,6 @@
 from include import get_file_path
 from .collidables import Collidable
+from .projectiles import EnemyProjectileLeft
 import pygame, os
 
 
@@ -134,8 +135,14 @@ class BoagGunship(Collidable):
         self.draw(view)
 
     def move(self,**kwargs):
+        map = kwargs["map"]
+
+        if self.rect.y in range(kwargs["playery"]-5,kwargs["playery"]+5):
+            #Shoot because the ship has crossed paths with the player
+            map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
+
         if not self.targety:
-            #initialize
+            #initialize  - targety is a point in time we don't want it to mirror the player
             self.targety = kwargs["playery"]
 
         #Home in on player
@@ -145,6 +152,8 @@ class BoagGunship(Collidable):
             else:
                 self.rect.y += 2
         else:
+            #Shoot
+            map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
             #Reset target now that ship has moved
             self.targety = kwargs["playery"]
             #Move to player

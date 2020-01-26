@@ -48,7 +48,7 @@ class GameMap(pygame.sprite.Sprite):
             #Animate
             if collidable.onscreen(xoffset*-1,self.screen):
                 if(collidable.movable):
-                    collidable.move(playery=self.player.rect.y)
+                    collidable.move(playery=self.player.rect.y,map=self)
                 onscreensprites.add(collidable)
 
         #Update movement for enemy groups
@@ -58,7 +58,8 @@ class GameMap(pygame.sprite.Sprite):
     #Detect a projectile hitting an enemy and perform action
     def updatecollidables(self,onscreensprites):
         sprites = []
-        for proj in self.projectiles:
+        friendlyprojectiles = [p for p in self.projectiles if not p.enemy]
+        for proj in friendlyprojectiles:
             collided = pygame.sprite.spritecollide(proj,onscreensprites, False)
             hitval = sum([ s.hitval for s in collided if type(s).__name__=="Projectile"])
             for sprite in collided:
