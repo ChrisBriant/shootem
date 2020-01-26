@@ -19,6 +19,8 @@ class Collidable(pygame.sprite.Sprite):
         self.rect.y = posy
         self.width = width
         self.height = height
+        self.dead = False
+        self.remove = False
 
     def onscreen(self,xoffset,screen):
         #Caculate object within screen area

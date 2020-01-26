@@ -42,11 +42,13 @@ class GameMap(pygame.sprite.Sprite):
         print("Col count", ",", len(projectiles))
 
         for collidable in collidables:
-            #print(str(id(collidable)))
-            #print(type(collidable))
+            #Remove if it has been destroyed
+            if collidable.remove:
+                self.collidables.remove(collidable)
+            #Animate
             if collidable.onscreen(xoffset*-1,self.screen):
                 if(collidable.movable):
-                    collidable.move()
+                    collidable.move(playery=self.player.rect.y)
                 onscreensprites.add(collidable)
 
         #Update movement for enemy groups
@@ -62,8 +64,8 @@ class GameMap(pygame.sprite.Sprite):
             for sprite in collided:
                 if sprite.destructable:
                     sprite.hit(hitval)
-                elif type(sprite).__name__ == "Projectile":
-                    self.projectiles.remove(sprite)
+                    self.projectiles.remove(proj)
+
                 sprites.append(sprite)
 
     def collision(self):

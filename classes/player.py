@@ -114,6 +114,9 @@ class Player(pygame.sprite.Sprite):
 
 
     def moveplayer(self,keys,screen, gamearea,map):
+        #Update the map with the player position
+        #map.playerpos = (self.rect.x,self.rect.y)
+
         if self.dead:
             #Move player up and then off the screen
             if self.death_drop_count > 0:

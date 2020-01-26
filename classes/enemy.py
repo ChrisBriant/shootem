@@ -43,7 +43,7 @@ class Rocket(Collidable):
         print("Drawing")
         self.draw(view)
 
-    def move(self):
+    def move(self,**kwargs):
         self.launchcounter += 1
         if self.launchcounter > 30:
             if self.launchcounter - 30 < 5:
@@ -60,29 +60,97 @@ class Scobot(Collidable):
     def __init__(self, posx, posy, width, height, movingdown):
         Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 3
-        self.launchcounter = 0
         self.image.fill((255,255,255))
         self.image.set_colorkey((255,255,255))
         self.movingdown=movingdown
         self.destructable=True
         self.points = 10
         self.strength = 1
+        self.frameindex = 0
+        self.deathcount = 0
 
         #load images
         self.frames = [pygame.image.load(get_file_path("i","scobot" + "/scobot" + str(n) + ".png")) for n in range(4)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(10)]
 
-        self.image.blit(self.frames[0], (0,0))
+        self.image.blit(self.frames[self.frameindex], (0,0))
 
 
     def draw(self,view):
         self.draw(view)
 
-    def move(self):
-        self.rect.x = self.rect.x - self.vel
+    def move(self,**kwargs):
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+
+        if self.frameindex > 2:
+            self.frameindex = 0
+        else:
+            self.frameindex += 1
+        if self.dead:
+            self.rect.x = self.rect.x - self.vel
+            self.image = pygame.transform.scale(self.image,(50,50))
+            self.image.fill((255,255,255))
+            if self.deathcount < 4:
+                self.image.blit(self.frames[self.frameindex], (0,0))
+            self.image.blit(self.deathSeq[self.deathcount],(-10,-10))
+            if self.deathcount < 9:
+                self.deathcount += 1
+            else:
+                #Set flag for removal
+                self.remove = True
+        else:
+            self.rect.x = self.rect.x - self.vel
+            self.image.blit(self.frames[self.frameindex], (0,0))
 
     def hit(self,hitval):
         if self.strength - hitval <=0:
             self.dead = True
+
+
+class BoagGunship(Collidable):
+    def __init__(self, posx, posy, width, height):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.vel = 0
+        self.launchcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.destructable=True
+        self.points = 10
+        self.strength = 3
+        self.frameindex = 0
+        self.deathcount = 0
+
+        #For targeting the player
+        self.targety = None
+
+        #load images
+        self.frames = [pygame.image.load(get_file_path("i","boagship" + "/boag" + str(n) + ".png")) for n in range(4)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(10)]
+
+        self.image.blit(self.frames[self.frameindex], (0,0))
+
+    def draw(self,view):
+        self.draw(view)
+
+    def move(self,**kwargs):
+        if not self.targety:
+            #initialize
+            self.targety = kwargs["playery"]
+
+        #Home in on player
+        if self.rect.y not in range(self.targety-5,self.targety+5):
+            if self.rect.y > self.targety:
+                self.rect.y -= 2
+            else:
+                self.rect.y += 2
+        else:
+            #Reset target now that ship has moved
+            self.targety = kwargs["playery"]
+            #Move to player
+        self.image.blit(self.frames[self.frameindex], (0,0))
+        self.rect.x -= self.vel
+
 
 class EnemyGroup():
     def __init__(self, posx, posy, height):
@@ -115,7 +183,7 @@ class ScobotGroup(EnemyGroup):
         for s in self.enemies:
             s.draw(view)
 
-    def move(self):
+    def move(self,**kwargs):
         #Move count controls the speed it animates at
         if self.movecount == 0:
             for s in self.enemies:
