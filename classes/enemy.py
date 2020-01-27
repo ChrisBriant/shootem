@@ -53,7 +53,7 @@ class Rocket(Collidable):
             self.rect.y -= self.vel
 
     #Animate the explosion
-    def hit(self):
+    def hit(self, hitval):
         pass
 
 
@@ -105,7 +105,8 @@ class Scobot(Collidable):
             self.image.blit(self.frames[self.frameindex], (0,0))
 
     def hit(self,hitval):
-        if self.strength - hitval <=0:
+        self.strength -= hitval
+        if self.strength <=0:
             self.dead = True
 
 
@@ -113,7 +114,7 @@ class BoagGunship(Collidable):
     def __init__(self, posx, posy, width, height):
         Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 0
-        self.launchcounter = 0
+        self.shootcounter = 0
         self.image.fill((255,255,255))
         self.image.set_colorkey((255,255,255))
         self.destructable=True
@@ -127,7 +128,7 @@ class BoagGunship(Collidable):
 
         #load images
         self.frames = [pygame.image.load(get_file_path("i","boagship" + "/boag" + str(n) + ".png")) for n in range(4)]
-        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(10)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(18)]
 
         self.image.blit(self.frames[self.frameindex], (0,0))
 
@@ -137,29 +138,62 @@ class BoagGunship(Collidable):
     def move(self,**kwargs):
         map = kwargs["map"]
 
-        if self.rect.y in range(kwargs["playery"]-5,kwargs["playery"]+5):
-            #Shoot because the ship has crossed paths with the player
-            map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
-
-        if not self.targety:
-            #initialize  - targety is a point in time we don't want it to mirror the player
-            self.targety = kwargs["playery"]
-
-        #Home in on player
-        if self.rect.y not in range(self.targety-5,self.targety+5):
-            if self.rect.y > self.targety:
-                self.rect.y -= 2
-            else:
-                self.rect.y += 2
+        if self.frameindex < 3:
+            self.frameindex += 1
         else:
-            #Shoot
-            map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
-            #Reset target now that ship has moved
-            self.targety = kwargs["playery"]
-            #Move to player
-        self.image.blit(self.frames[self.frameindex], (0,0))
-        self.rect.x -= self.vel
+            self.frameindex = 0
+        if self.dead:
+            self.rect.x = self.rect.x - self.vel
+            self.image = pygame.transform.scale(self.image,(50,50))
+            self.image.fill((255,255,255))
+            if self.deathcount < 4:
+                self.image.blit(self.frames[self.frameindex], (0,0))
+            self.image.blit(self.deathSeq[self.deathcount],(-10,-10))
+            if self.deathcount < 17:
+                self.deathcount += 1
+            else:
+                #Set flag for removal
+                self.remove = True
+        else:
+            if self.rect.y in range(kwargs["playery"]-5,kwargs["playery"]+5):
+                #Shoot because the ship has crossed paths with the player
+                if self.shootcounter == 0:
+                    map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
+                #control rate of fire
+                if self.shootcounter < 10:
+                    self.shootcounter += 1
+                else:
+                    self.shootcounter = 0
 
+            if not self.targety:
+                #initialize  - targety is a point in time we don't want it to mirror the player
+                self.targety = kwargs["playery"]
+
+            #Home in on player
+            if self.rect.y not in range(self.targety-5,self.targety+5):
+                if self.rect.y > self.targety:
+                    self.rect.y -= 2
+                else:
+                    self.rect.y += 2
+            else:
+                #Shoot
+                if self.shootcounter == 0:
+                    map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
+                #control rate of fire
+                if self.shootcounter < 10:
+                    self.shootcounter += 1
+                else:
+                    self.shootcounter = 0
+                #Reset target now that ship has moved
+                self.targety = kwargs["playery"]
+                #Move to player
+            self.image.blit(self.frames[self.frameindex], (0,0))
+            self.rect.x -= self.vel
+
+    def hit(self,hitval):
+        self.strength -= hitval
+        if self.strength <=0:
+            self.dead = True
 
 class EnemyGroup():
     def __init__(self, posx, posy, height):

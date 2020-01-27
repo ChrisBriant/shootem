@@ -191,8 +191,12 @@ class Player(pygame.sprite.Sprite):
 
     #Routine for player death
     def die(self):
+        pass
+        #Temporarily make indistructable
+        """
         if not self.dead:
             self.dead = True
             self.lives -= 1
             self.deathpos = (self.rect.x,self.rect.y)
             print("Hit!")
+            """

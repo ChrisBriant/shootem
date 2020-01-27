@@ -70,7 +70,10 @@ class GameMap(pygame.sprite.Sprite):
                 sprites.append(sprite)
 
     def collision(self):
-        sprite = pygame.sprite.spritecollideany(self.player,self.collidables)
+        enemyprojectiles = [p for p in self.projectiles if p.enemy]
+        collidables = [c for c in self.collidables]
+        enemycollidables = collidables + enemyprojectiles
+        sprite = pygame.sprite.spritecollideany(self.player,enemycollidables)
         if sprite:
             return True
         else:
