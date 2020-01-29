@@ -1,5 +1,5 @@
 from classes.player import Player
-from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship
+from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup
 from classes.collidables import Collidable
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
@@ -29,7 +29,7 @@ def collideontop(topsprite,bottomspritegrp):
     return collision
 
 bg = pygame.image.load(get_file_path("i","bg.jpg"))
-char = pygame.image.load(get_file_path("i","standing.png"))
+#char = pygame.image.load(get_file_path("i","standing.png"))
 
 
 clock = pygame.time.Clock()
@@ -159,12 +159,14 @@ platformgroup = pygame.sprite.Group(platform1,platform2,platform3,platform4,plat
 
 #Create Level
 map = GameMap(gamearea,screen, ship)
-map.addcollidable(100,100,100,100)
-map.addcollidable(1500,200,100,100)
-map.addcollidable(1600,400,100,100)
-map.addenemy(Rocket(800,540,30,60))
-map.addenemy(Rocket(1400,540,30,60))
-map.addenemy(BoagGunship(800,300,60,40))
+#map.addcollidable(100,100,100,100)
+#map.addcollidable(1500,200,100,100)
+#map.addcollidable(1600,400,100,100)
+#map.addenemy(Rocket(800,540,30,60))
+#map.addenemy(Rocket(1400,540,30,60))
+#map.addenemy(BoagGunship(800,300,60,40))
+#map.addenemy(BoagPulse(800,300,30,30,False))
+map.addenemygroup(BoagPulseGroup(900,300,8))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))

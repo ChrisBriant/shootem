@@ -195,6 +195,74 @@ class BoagGunship(Collidable):
         if self.strength <=0:
             self.dead = True
 
+
+class BoagPulse(Collidable):
+
+    def __init__(self, posx, posy, width, height, movingdown, wave=False):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.vel = 3
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.movingdown=movingdown
+        self.destructable=True
+        self.points = 10
+        self.strength = 1
+        self.frameindex = 0
+        self.deathcount = 0
+        #For wave movement pattern
+        self.wave = wave
+        if movingdown:
+            self.miny = posy
+            self.maxy = posy + (height * 4)
+        else:
+            self.miny = posy - (height * 4)
+            self.maxy = posy
+        #load images
+        self.frames = [pygame.image.load(get_file_path("i","boagpulse" + "/boagpulse" + str(n) + ".png")) for n in range(15)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(18)]
+
+        self.image.blit(self.frames[self.frameindex], (0,0))
+
+    def move(self,**kwargs):
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+
+        if self.frameindex < 14:
+            self.frameindex += 1
+        else:
+            self.frameindex = 0
+        if self.dead:
+            self.rect.x = self.rect.x - self.vel
+            self.image = pygame.transform.scale(self.image,(50,50))
+            self.image.fill((255,255,255))
+            if self.deathcount < 4:
+                self.image.blit(self.frames[self.frameindex], (0,0))
+            self.image.blit(self.deathSeq[self.deathcount],(-10,-10))
+            if self.deathcount < 9:
+                self.deathcount += 1
+            else:
+                #Set flag for removal
+                self.remove = True
+        else:
+            #Control wave movement
+            print(self.movingdown, " ", self.rect.y, " ", self.maxy)
+            if self.wave:
+                if self.movingdown:
+                    self.rect.y += 10
+                    if self.rect.y == self.maxy:
+                        self.movingdown = False
+                else:
+                    self.rect.y -= 10
+                    if self.rect.y == self.miny:
+                        self.movingdown = True
+            self.rect.x = self.rect.x - self.vel
+            self.image.blit(self.frames[self.frameindex], (0,0))
+
+    def hit(self,hitval):
+        self.strength -= hitval
+        if self.strength <=0:
+            self.dead = True
+
 class EnemyGroup():
     def __init__(self, posx, posy, height):
         self.enemies = []
@@ -244,3 +312,20 @@ class ScobotGroup(EnemyGroup):
             self.movecount = 5
         else:
             self.movecount -= 1
+
+
+class BoagPulseGroup(EnemyGroup):
+    def __init__(self, posx, posy, width):
+        EnemyGroup.__init__(self,posx,posy,2)
+        #self.enemies.append(Scobot(self.x,self.y,20,30,False))
+        #self.movecount = 5
+
+        for i in range(0,width):
+            print(posx+(60*i))
+            #Up boagpulse
+            self.enemies.append(BoagPulse(posx + (60 * i),posy,30,30,False))
+            #Down boagpulse
+            self.enemies.append(BoagPulse(posx + 30 + (60 * i),posy + 60,30,30,False))
+
+    def move(self,**kwargs):
+        pass
