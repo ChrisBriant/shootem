@@ -1,5 +1,5 @@
 from classes.player import Player
-from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup
+from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown
 from classes.collidables import Collidable
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
@@ -165,8 +165,10 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(Rocket(800,540,30,60))
 #map.addenemy(Rocket(1400,540,30,60))
 #map.addenemy(BoagGunship(800,300,60,40))
-#map.addenemy(BoagPulse(800,300,30,30,False))
-map.addenemygroup(BoagPulseGroup(900,300,8))
+#map.addenemy(BoagPulse(800,300,30,30,True,True))
+#map.addenemygroup(BoagPulseGroup(900,300,8,False))
+map.addenemy(GunUpDown(800,0,20,30))
+map.addenemy(GunUpDown(400,560,20,30,False))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))
@@ -175,7 +177,7 @@ map.addenemy(Scobot(1200,200,20,30))
 map.addenemy(Scobot(1200,400,20,30))
 map.addenemy(Scobot(1200,450,20,30))
 """
-#map.addenemygroup(ScobotGroup(800,300,5))
+#map.addenemygroup(ScobotGroup(1000,300,5))
 #colidegroup = pygame.sprite.Group(collidable)
 
 #group containing player and platforms

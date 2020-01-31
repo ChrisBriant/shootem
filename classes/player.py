@@ -89,7 +89,7 @@ class Player(pygame.sprite.Sprite):
         self.standing = False
 
     def moveright(self):
-        self.rect.x += self.vel
+        self.rect.x += self.vel*2
         self.right = True
         self.left = False
         self.up = False

@@ -44,3 +44,35 @@ class EnemyProjectileLeft(Projectile):
         self.rect.x -= self.vel
         if self.shootcount < 13:
             self.shootcount += 1
+
+
+#Shoots a projectile to the left of the screen
+class EnemyProjectileDown(Projectile):
+
+    def __init__(self,posx,posy,width,height):
+        Projectile.__init__(self,posx,posy,width,height)
+        self.enemy = True
+        self.frames = [pygame.image.load(get_file_path("i","projd" + "/projd" + str(n) + ".png")) for n in range(17)]
+
+        self.image.blit(self.frames[0], (0,0))
+
+    def move(self,**kwargs):
+        self.image.blit(self.frames[self.shootcount], (0,0))
+        self.rect.y += self.vel
+        if self.shootcount < 16:
+            self.shootcount += 1
+
+
+#Shoots a projectile to the left of the screen
+class EnemyProjectileUp(Projectile):
+
+    def __init__(self,posx,posy,width,height):
+        Projectile.__init__(self,posx,posy,width,height)
+        self.enemy = True
+        self.frames = [pygame.image.load(get_file_path("i","projd" + "/projd" + str(n) + ".png")) for n in range(17)]
+
+    def move(self,**kwargs):
+        self.image.blit(pygame.transform.flip(self.frames[self.shootcount],False,True), (0,0))
+        self.rect.y -= self.vel
+        if self.shootcount < 16:
+            self.shootcount += 1

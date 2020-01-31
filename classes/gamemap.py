@@ -46,9 +46,13 @@ class GameMap(pygame.sprite.Sprite):
             if collidable.remove:
                 self.collidables.remove(collidable)
             #Animate
+            #Running this for all sprites might slow down the computer
+            #Having to run it outside of the if onscreen condition because if not
+            # then it will render the distance incorrectly
+            if(collidable.movable):
+                collidable.move(playery=self.player.rect.y,map=self)
+            #Only display if onscreen
             if collidable.onscreen(xoffset*-1,self.screen):
-                if(collidable.movable):
-                    collidable.move(playery=self.player.rect.y,map=self)
                 onscreensprites.add(collidable)
 
         #Update movement for enemy groups

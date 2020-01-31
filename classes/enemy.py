@@ -1,6 +1,6 @@
 from include import get_file_path
 from .collidables import Collidable
-from .projectiles import EnemyProjectileLeft
+from .projectiles import EnemyProjectileLeft, EnemyProjectileDown, EnemyProjectileUp
 import pygame, os
 
 
@@ -56,6 +56,51 @@ class Rocket(Collidable):
     def hit(self, hitval):
         pass
 
+
+class GunUpDown(Collidable):
+
+    def __init__(self, posx, posy, width, height, down=True):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.shootcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.destructable = False
+        self.down = down
+
+        #load images
+        self.frame = pygame.image.load(get_file_path("i","gund0.png"))
+
+        if down:
+            self.image.blit(self.frame, (0,0))
+        else:
+            self.image.blit(pygame.transform.flip(self.frame, False, True), (0,0))
+
+
+    def move(self,**kwargs):
+        map = kwargs["map"]
+
+        if self.down:
+            if self.shootcounter == 0:
+                map.addprojectile(EnemyProjectileDown(self.rect.x - 5, self.rect.y + self.height, 30,28))
+            #control rate of fire
+            if self.shootcounter < 30:
+                self.shootcounter += 1
+            else:
+                self.shootcounter = 0
+        else:
+            if self.shootcounter == 0:
+                map.addprojectile(EnemyProjectileUp(self.rect.x - 5, self.rect.y - self.height, 30,28))
+            #control rate of fire
+            if self.shootcounter < 30:
+                self.shootcounter += 1
+            else:
+                self.shootcounter = 0
+
+
+
+    #Animate the explosion
+    def hit(self, hitval):
+        pass
 
 class Scobot(Collidable):
     def __init__(self, posx, posy, width, height, movingdown):
@@ -249,11 +294,11 @@ class BoagPulse(Collidable):
             if self.wave:
                 if self.movingdown:
                     self.rect.y += 10
-                    if self.rect.y == self.maxy:
+                    if self.rect.y >= self.maxy:
                         self.movingdown = False
                 else:
                     self.rect.y -= 10
-                    if self.rect.y == self.miny:
+                    if self.rect.y <= self.miny:
                         self.movingdown = True
             self.rect.x = self.rect.x - self.vel
             self.image.blit(self.frames[self.frameindex], (0,0))
@@ -315,17 +360,36 @@ class ScobotGroup(EnemyGroup):
 
 
 class BoagPulseGroup(EnemyGroup):
-    def __init__(self, posx, posy, width):
+    def __init__(self, posx, posy, width, wave=False):
         EnemyGroup.__init__(self,posx,posy,2)
         #self.enemies.append(Scobot(self.x,self.y,20,30,False))
         #self.movecount = 5
+        self.startpos = posy
+        self.endpos = posy + 70
+        #Controls the space between the sprites
+        self.gap = 0
+        #self.movecount = 0
 
         for i in range(0,width):
-            print(posx+(60*i))
+            ## NOTE: Need to try to get a gap between the enemies
             #Up boagpulse
-            self.enemies.append(BoagPulse(posx + (60 * i),posy,30,30,False))
+            self.enemies.append(BoagPulse(posx + self.gap + (60 * i),posy,30,30,False,wave))
             #Down boagpulse
-            self.enemies.append(BoagPulse(posx + 30 + (60 * i),posy + 60,30,30,False))
+            self.gap += 20
+            self.enemies.append(BoagPulse(posx + self.gap + 30 + (60 * i),posy + 70,30,30,False,wave))
+            self.gap += 20
 
     def move(self,**kwargs):
-        pass
+        #Move count controls the speed it animates at
+        for s in self.enemies:
+            if s.rect.y == self.startpos:
+                s.rect.y += 5
+                s.movingdown = True
+            elif s.rect.y == self.endpos:
+                s.rect.y -= 5
+                s.movingdown = False
+            else:
+                if s.movingdown:
+                    s.rect.y += 5
+                else:
+                    s.rect.y -= 5
