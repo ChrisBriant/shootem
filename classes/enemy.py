@@ -241,6 +241,191 @@ class BoagGunship(Collidable):
             self.dead = True
 
 
+class Kamakazie(Collidable):
+    def __init__(self, posx, posy, width, height):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.vel = 0
+        self.shootcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.destructable=True
+        self.points = 30
+        self.strength = 2
+        self.frameindex = 0
+        self.deathcount = 0
+        #For targeting the player
+        self.targety = None
+        self.kamakazie = False
+
+        #load images
+        self.frames = [pygame.image.load(get_file_path("i","boagkama" + "/boagkama" + str(n) + ".png")) for n in range(14)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(18)]
+
+    def move(self,**kwargs):
+        playery = kwargs["playery"]
+        playerx = kwargs["playerx"]
+        if self.kamakazie:
+            maxframe = 13
+        else:
+            maxframe = 8
+        if self.frameindex < maxframe:
+            self.frameindex += 1
+        else:
+            self.frameindex = 0
+        #Need to move to the same level as the player and then shoot off
+        if self.rect.y in range(playery-5,kwargs["playery"]+5) and self.rect.x - playerx < 400 and not self.kamakazie:
+            #Target the player craft
+            self.kamakazie = True
+            self.vel = 8
+        else:
+            #move in direction of player
+            #The ranges stops the jitter effect
+            if self.rect.y not in range(playery-5,playery+5):
+                if self.rect.y > playery:
+                    self.rect.y -= 2
+                else:
+                    self.rect.y += 2
+        #Death sequence
+        if self.dead:
+            self.rect.x = self.rect.x - self.vel
+            self.image = pygame.transform.scale(self.image,(50,50))
+            self.image.fill((255,255,255))
+            if self.deathcount < 4:
+                self.image.blit(self.frames[self.frameindex], (0,0))
+            self.image.blit(self.deathSeq[self.deathcount],(0,0))
+            if self.deathcount < 17:
+                self.deathcount += 1
+            else:
+                #Set flag for removal
+                self.remove = True
+        else:
+            self.image.blit(self.frames[self.frameindex], (0,0))
+            self.rect.x -= self.vel
+
+    def hit(self,hitval):
+        print("Hit")
+        self.strength -= hitval
+        if self.strength <=0:
+            self.dead = True
+
+
+class HomingMissile(Collidable):
+    def __init__(self, posx, posy, width, height):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.vel = 1
+        self.shootcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.destructable=True
+        self.points = 30
+        self.strength = 2
+        self.frameindex = 0
+        self.deathcount = 0
+        #For targeting the player
+        self.targety = None
+        self.kamakazie = False
+        self.movingright = False
+        self.rotatingright = False
+        self.rotatingleft = False
+        self.rotatecount = 6
+        self.completedrotation = False
+        #If the player evades the missile long enough it self destructs
+        self.giveupcount = 0
+
+        #load images
+        self.frames = [pygame.image.load(get_file_path("i","homingmissile" + "/homingm" + str(n) + ".png")) for n in range(14)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(18)]
+
+    def move(self,**kwargs):
+        playery = kwargs["playery"]
+        playerx = kwargs["playerx"]
+        if self.kamakazie:
+            maxframe = 13
+            self.giveupcount += 1
+            if self.giveupcount == 200:
+                #Missile self destructs
+                self.dead = True
+        else:
+            maxframe = 8
+        if self.frameindex < maxframe:
+            self.frameindex += 1
+        else:
+            self.frameindex = 0
+        #Need to move to the same level as the player and then shoot off
+        if self.rect.y in range(playery-5,kwargs["playery"]+5) and self.rect.x - playerx < 400 and not self.kamakazie:
+            #Target the player craft
+            self.kamakazie = True
+            self.vel = 8
+        else:
+            #move in direction of player
+            #The ranges stops the jitter effect
+            if self.rect.y not in range(playery-5,playery+5):
+                if self.rect.y > playery:
+                    self.rect.y -= 2
+                else:
+                    self.rect.y += 2
+        #The missile passes the player
+        if self.rect.x < playerx - 100:
+            if not self.movingright:
+                self.movingright = True
+                self.rotatingright = True
+        elif self.rect.x > playerx + 100:
+            if self.movingright:
+                self.movingright = False
+                self.rotatingleft = True
+        if self.movingright:
+            if self.rotatingright:
+                if self.rotatecount >= 180:
+                    #Finish rotation and move in direction
+                    self.rotatingright = False
+                else:
+                    self.image = pygame.transform.scale(self.image,(40,40))
+                    self.image.fill((255,255,255))
+                    self.image.blit(pygame.transform.rotate(self.frames[self.frameindex],self.rotatecount*-1), (0,0))
+                    self.rotatecount += 6
+            else:
+                #Turn back
+                self.image.fill((255,255,255))
+                self.image.blit(pygame.transform.flip(self.frames[self.frameindex],True,False), (0,0))
+                self.rect.x += self.vel
+                self.rotatecount = 6
+        else:
+            if self.rotatingleft:
+                if self.rotatecount >= 180:
+                    #Finish rotation and move in direction
+                    self.rotatingleft = False
+                else:
+                    self.image = pygame.transform.scale(self.image,(40,40))
+                    self.image.fill((255,255,255))
+                    self.image.blit(pygame.transform.rotate(self.frames[self.frameindex],180 - self.rotatecount), (0,0))
+                    self.rotatecount += 6
+            else:
+                self.image.fill((255,255,255))
+                self.image.blit(self.frames[self.frameindex], (0,0))
+                self.rect.x -= self.vel
+                self.completedrotation = True
+                self.rotatecount = 6
+        #Death sequence
+        if self.dead:
+            self.rect.x = self.rect.x - self.vel
+            self.image = pygame.transform.scale(self.image,(50,50))
+            self.image.fill((255,255,255))
+            if self.deathcount < 4:
+                self.image.blit(self.frames[self.frameindex], (0,0))
+            self.image.blit(self.deathSeq[self.deathcount],(0,0))
+            if self.deathcount < 17:
+                self.deathcount += 1
+            else:
+                #Set flag for removal
+                self.remove = True
+
+    def hit(self,hitval):
+        print("Hit")
+        self.strength -= hitval
+        if self.strength <=0:
+            self.dead = True
+
+
 class BoagPulse(Collidable):
 
     def __init__(self, posx, posy, width, height, movingdown, wave=False):

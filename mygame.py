@@ -1,5 +1,6 @@
 from classes.player import Player
-from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown
+from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown, \
+    Kamakazie, HomingMissile
 from classes.collidables import Collidable
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
@@ -104,41 +105,6 @@ xplayerstartpos = 200
 yplayerstartpos = 0
 ship = Player(xplayerstartpos, yplayerstartpos, 60,30)
 
-"""
-platform1 = Platform(100,50,60,20)
-platform2 = Platform(200,150,100,20)
-platform3 = Platform(350,420,100,20)
-platform4 = Platform(600,420,100,20)
-platform5 = Platform(990,420,200,20)
-platform6 = Platform(100,600,100,20)
-platform7 = Platform(100,980,100,20)
-platform8 = Platform(1400,940,100,20)
-platform9 = Platform(1200,880,100,20)
-platform10 = Platform(1400,820,100,20)
-platform11 = Platform(1200,740,100,20)
-platform12 = Platform(1400,720,100,20)
-platform13 = Platform(1200,680,100,20)
-platform14 = Platform(1400,640,100,20)
-platform15 = Platform(1200,600,100,20)
-platform16 = Platform(1400,560,100,20)
-platform17 = Platform(1200,520,100,20)
-platform18 = Platform(1400,480,100,20)
-platform19 = Platform(1200,440,100,20)
-platform20 = Platform(1400,400,100,20)
-platform21 = Platform(1200,380,100,20)
-platform22 = Platform(1400,340,100,20)
-platform23 = Platform(1200,300,100,20)
-platform24 = Platform(1400,280,100,20)
-platform25 = Platform(1200,240,100,20)
-platform26 = Platform(1400,200,100,20)
-platform27 = Platform(1200,160,100,20)
-platform28 = Platform(1400,120,100,20)
-platform29 = Platform(1000,80,200,20)
-platform30 = Platform(1400,40,100,20)
-platform31 = Platform(1200,0,100,20)
-platform32 = Platform(600,960,800,20)
-"""
-
 
 
 
@@ -147,14 +113,6 @@ platform32 = Platform(600,960,800,20)
 
 #Messages
 deathmessage = OnScreenMessage(70,"YOU DIED!")
-
-"""
-platformgroup = pygame.sprite.Group(platform1,platform2,platform3,platform4,platform5,platform6,platform7,platform8,
-                                        platform9,platform10,platform11,platform12,platform13,platform14,platform15,
-                                        platform16,platform17,platform18,platform19,platform20,platform21,platform22,
-                                        platform23,platform24,platform25,platform26,platform27,platform28,platform29,
-                                        platform30,platform31,platform32)
-"""
 
 
 #Create Level
@@ -167,8 +125,10 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(BoagGunship(800,300,60,40))
 #map.addenemy(BoagPulse(800,300,30,30,True,True))
 #map.addenemygroup(BoagPulseGroup(900,300,8,False))
-map.addenemy(GunUpDown(800,0,20,30))
-map.addenemy(GunUpDown(400,560,20,30,False))
+#map.addenemy(GunUpDown(800,0,20,30))
+#map.addenemy(GunUpDown(400,560,20,30,False))
+#map.addenemy(Kamakazie(800,100,55,20))
+map.addenemy(HomingMissile(800,100,55,20))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))

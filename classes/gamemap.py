@@ -50,7 +50,7 @@ class GameMap(pygame.sprite.Sprite):
             #Having to run it outside of the if onscreen condition because if not
             # then it will render the distance incorrectly
             if(collidable.movable):
-                collidable.move(playery=self.player.rect.y,map=self)
+                collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self)
             #Only display if onscreen
             if collidable.onscreen(xoffset*-1,self.screen):
                 onscreensprites.add(collidable)
