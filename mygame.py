@@ -1,7 +1,7 @@
 from classes.player import Player
 from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown, \
-    Kamakazie, HomingMissile
-from classes.collidables import Collidable
+    Kamakazie, HomingMissile, Atom
+from classes.collidables import Collidable, Wall
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
 import pygame, os
@@ -34,30 +34,6 @@ bg = pygame.image.load(get_file_path("i","bg.jpg"))
 
 
 clock = pygame.time.Clock()
-
-"""
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
-       # Call the parent class (Sprite) constructor
-       pygame.sprite.Sprite.__init__(self)
-
-       # Create an image of the block, and fill it with a color.
-       # This could also be an image loaded from the disk.
-       self.image = pygame.Surface((width, height))
-       self.image.fill((255,0,0))
-       #self.image.blit(self.walkRight[0],(0,0))
-       # Fetch the rectangle object that has the dimensions of the image
-       # Update the position of this object by setting the values of rect.x and rect.y
-       self.rect = self.image.get_rect()
-       self.rect.x = x
-       self.rect.y = y
-       self.width = width
-       self.height = height
-"""
-
-
-
-
 
 class projectile(object):
     def __init__(self,x,y,radius,color,facing):
@@ -128,7 +104,11 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(GunUpDown(800,0,20,30))
 #map.addenemy(GunUpDown(400,560,20,30,False))
 #map.addenemy(Kamakazie(800,100,55,20))
-map.addenemy(HomingMissile(800,100,55,20))
+#map.addenemy(HomingMissile(800,100,55,20))
+#map.addenemy(Atom(800,100,25,25,"Y"))
+#map.addenemy(Atom(800,100,25,25,"R"))
+map.addenemy(Atom(800,100,50,50))
+map.addcollidable(Wall(300,0,3))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))

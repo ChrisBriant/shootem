@@ -1,7 +1,9 @@
 from include import get_file_path
 from .collidables import Collidable
 from .projectiles import EnemyProjectileLeft, EnemyProjectileDown, EnemyProjectileUp
+from random import randrange
 import pygame, os
+
 
 
 class Rocket(Collidable):
@@ -52,9 +54,6 @@ class Rocket(Collidable):
                 self.image.blit(self.frames[self.launchcounter-30], (0,0))
             self.rect.y -= self.vel
 
-    #Animate the explosion
-    def hit(self, hitval):
-        pass
 
 
 class GunUpDown(Collidable):
@@ -98,9 +97,6 @@ class GunUpDown(Collidable):
 
 
 
-    #Animate the explosion
-    def hit(self, hitval):
-        pass
 
 class Scobot(Collidable):
     def __init__(self, posx, posy, width, height, movingdown):
@@ -149,10 +145,6 @@ class Scobot(Collidable):
             self.rect.x = self.rect.x - self.vel
             self.image.blit(self.frames[self.frameindex], (0,0))
 
-    def hit(self,hitval):
-        self.strength -= hitval
-        if self.strength <=0:
-            self.dead = True
 
 
 class BoagGunship(Collidable):
@@ -235,11 +227,12 @@ class BoagGunship(Collidable):
             self.image.blit(self.frames[self.frameindex], (0,0))
             self.rect.x -= self.vel
 
+    """
     def hit(self,hitval):
         self.strength -= hitval
         if self.strength <=0:
             self.dead = True
-
+            """
 
 class Kamakazie(Collidable):
     def __init__(self, posx, posy, width, height):
@@ -302,11 +295,6 @@ class Kamakazie(Collidable):
             self.image.blit(self.frames[self.frameindex], (0,0))
             self.rect.x -= self.vel
 
-    def hit(self,hitval):
-        print("Hit")
-        self.strength -= hitval
-        if self.strength <=0:
-            self.dead = True
 
 
 class HomingMissile(Collidable):
@@ -419,11 +407,6 @@ class HomingMissile(Collidable):
                 #Set flag for removal
                 self.remove = True
 
-    def hit(self,hitval):
-        print("Hit")
-        self.strength -= hitval
-        if self.strength <=0:
-            self.dead = True
 
 
 class BoagPulse(Collidable):
@@ -488,10 +471,117 @@ class BoagPulse(Collidable):
             self.rect.x = self.rect.x - self.vel
             self.image.blit(self.frames[self.frameindex], (0,0))
 
-    def hit(self,hitval):
+
+class Atom(Collidable):
+
+    def __init__(self, posx, posy, width, height,type="N"):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.vel = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.type = type
+        self.movingdown=False
+        self.movingup = False
+        self.movingright=False
+        self.movingleft = False
+        self.destructable=True
+        self.points = 10
+        self.strength = 1
+        self.frameindex = 0
+        self.deathcount = 0
+        #Change count for deciding when to change behaviour
+        self.changecount = 0
+        #For splitting
+        self.reproduced = False
+
+
+        #load images
+        if type=="N":
+            self.frames = [pygame.image.load(get_file_path("i","boagatom" + "/atom" + str(n) + ".png")) for n in range(19)]
+            self.deathSeq = [pygame.image.load(get_file_path("i","atomsplit" + "/atomsplit" + str(n) + ".png")) for n in range(20)]
+            self.deathlimit = 19
+            self.framelimit = 14
+        elif type=="R":
+            self.frames = [pygame.image.load(get_file_path("i","boagatom2" + "/atom2" + str(n) + ".png")) for n in range(24)]
+            self.deathSeq = [pygame.image.load(get_file_path("i","atomexplode" + "/atomexplode" + str(n) + ".png")) for n in range(11)]
+            self.deathlimit = 10
+            self.framelimit = 23
+        elif type=="Y":
+            self.frames = [pygame.image.load(get_file_path("i","boagatom3" + "/atom3" + str(n) + ".png")) for n in range(24)]
+            self.deathSeq = [pygame.image.load(get_file_path("i","atomexplode" + "/atomexplode" + str(n) + ".png")) for n in range(11)]
+            self.deathlimit = 10
+            self.framelimit = 23
+        elif type=="P":
+            self.frames = [pygame.image.load(get_file_path("i","boagatom4" + "/atom4" + str(n) + ".png")) for n in range(24)]
+            self.deathSeq = [pygame.image.load(get_file_path("i","atomexplode" + "/atomexplode" + str(n) + ".png")) for n in range(11)]
+            self.deathlimit = 10
+            self.framelimit = 23
+    def move(self,**kwargs):
+        map = kwargs["map"]
+
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+
+        if self.frameindex < self.framelimit:
+            self.frameindex += 1
+        else:
+            self.frameindex = 0
+        if self.dead:
+            if self.deathcount < self.deathlimit:
+                self.image.blit(self.deathSeq[self.deathcount], (0,0))
+                self.deathcount += 1
+            else:
+                ## NOTE: Don't know why this gets called twice, had to add the reproduced variable to control it
+                self.remove = True
+                if not self.reproduced and self.type == "N":
+                    map.addenemy(Atom(self.rect.x,self.rect.y+self.height+10,25,25,"R"))
+                    map.addenemy(Atom(self.rect.x,self.rect.y-self.height-10,25,25,"Y"))
+                    self.reproduced = True
+        else:
+            self.image.blit(self.frames[self.frameindex], (0,0))
+        #Decide behaviour
+        if self.changecount == 0:
+            if randrange(2) == 1:
+                self.movingdown = True
+            else:
+                self.movingdown = False
+            if randrange(2) == 1:
+                self.movingright = True
+            else:
+                self.movingright = False
+            if randrange(2) == 1:
+                self.movingleft = True
+            else:
+                self.movingleft = False
+            if randrange(2) == 1:
+                self.movingup = True
+            else:
+                self.movingup = False
+            self.vel = randrange(4)
+            self.changecount = 40
+        else:
+            self.changecount -= 1
+        if self.movingup and not self.movingdown:
+            self.rect.y = self.rect.y - self.vel
+        if self.movingdown and not self.movingup:
+            self.rect.y = self.rect.y + self.vel
+        if self.movingright and not self.movingleft:
+            self.rect.x = self.rect.x + self.vel
+        if self.movingleft and not self.movingright:
+            self.rect.x = self.rect.x - self.vel
+
+    """
+    def hit(self,hitval,**kwargs):
         self.strength -= hitval
         if self.strength <=0:
             self.dead = True
+            """
+
+
+
+
+
+
 
 class EnemyGroup():
     def __init__(self, posx, posy, height):

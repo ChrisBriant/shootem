@@ -9,13 +9,16 @@ class GameMap(pygame.sprite.Sprite):
         self.screen = screen
         self.collidables = pygame.sprite.Group()
         self.projectiles = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
         self.player = player
         self.enemygroups = []
 
-    def addcollidable(self, posx, posy, width, height):
-        self.collidables.add(Collidable(posx,posy,width,height))
+    def addcollidable(self, collidable):
+        self.collidables.add(collidable)
 
     def addenemy(self, sprite):
+        #Add to collidable group as well as enemy group for easier sorting
+        self.enemies.add(sprite)
         self.collidables.add(sprite)
 
     def addenemygroup(self, enemygroup):
@@ -39,7 +42,7 @@ class GameMap(pygame.sprite.Sprite):
                 del p
         collidables = self.collidables.sprites() + projectiles
 
-        print("Col count", ",", len(projectiles))
+        #print("Col count", ",", len(projectiles))
 
         for collidable in collidables:
             #Remove if it has been destroyed
@@ -68,10 +71,14 @@ class GameMap(pygame.sprite.Sprite):
             hitval = sum([ s.hitval for s in collided if type(s).__name__=="Projectile"])
             for sprite in collided:
                 if sprite.destructable:
-                    sprite.hit(hitval)
+                    sprite.hit(hitval,map=self)
                     self.projectiles.remove(proj)
-
                 sprites.append(sprite)
+        #Detect enemies hitting each other
+        #This will require the use of https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.groupcollide
+
+        #collidedsprites = pygame.sprite.groupcollide(onscreensprites,enemysprites)
+
 
     def collision(self):
         enemyprojectiles = [p for p in self.projectiles if p.enemy]

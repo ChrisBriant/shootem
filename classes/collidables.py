@@ -37,5 +37,33 @@ class Collidable(pygame.sprite.Sprite):
         else:
             return False
 
-    def hit(self):
-        print("Hit")
+    def hit(self,hitval,**kwargs):
+        self.strength -= hitval
+        if self.strength <=0:
+            self.dead = True
+
+class Wall(Collidable):
+
+    ## NOTE: Height is in blocks
+    def __init__(self,posx,posy,height):
+        Collidable.__init__(self,posx,posy,20,(30*height))
+        self.vel = 3
+        self.launchcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        #There is a minimum height of three
+        if height < 3:
+            height = 3
+        self.topend = pygame.image.load(get_file_path("i","wall1/wall11.png"))
+        self.botend = pygame.image.load(get_file_path("i","wall1/wall12.png"))
+        self.midsec = pygame.image.load(get_file_path("i","wall1/wall10.png"))
+        #Draw the wall
+        for i in range(0,height):
+            print(i)
+            if i == 0:
+                self.image.blit(self.topend, (0,0))
+            elif i == height:
+                print("HELLO MAN")
+                self.image.blit(self.botend, (0,i*30))
+            else:
+                self.image.blit(self.midsec, (0,i*30))
