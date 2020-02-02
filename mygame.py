@@ -2,6 +2,7 @@ from classes.player import Player
 from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown, \
     Kamakazie, HomingMissile, Atom
 from classes.collidables import Collidable, Wall
+from classes.scoreboard import ScoreBoard
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
 import pygame, os
@@ -62,6 +63,7 @@ def redrawGameWindow(totalscore):
         onscreensprites = map.getcollidables(xoffset)
         onscreensprites.draw(view)
         map.updatecollidables(onscreensprites)
+    view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
     win.blit(view,(xoffset,yoffset))
     #goblin.draw(win)
     for bullet in bullets:
@@ -78,7 +80,7 @@ def redrawGameWindow(totalscore):
 
 
 xplayerstartpos = 200
-yplayerstartpos = 0
+yplayerstartpos = 100
 ship = Player(xplayerstartpos, yplayerstartpos, 60,30)
 
 
@@ -98,7 +100,9 @@ map = GameMap(gamearea,screen, ship)
 #map.addcollidable(1600,400,100,100)
 #map.addenemy(Rocket(800,540,30,60))
 #map.addenemy(Rocket(1400,540,30,60))
-#map.addenemy(BoagGunship(800,300,60,40))
+#map.addenemy(BoagGunship(800,0,60,40))
+#map.addenemy(BoagGunship(800,200,60,40))
+map.addenemy(Scobot(900,100,20,30))
 #map.addenemy(BoagPulse(800,300,30,30,True,True))
 #map.addenemygroup(BoagPulseGroup(900,300,8,False))
 #map.addenemy(GunUpDown(800,0,20,30))
@@ -107,8 +111,9 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(HomingMissile(800,100,55,20))
 #map.addenemy(Atom(800,100,25,25,"Y"))
 #map.addenemy(Atom(800,100,25,25,"R"))
-map.addenemy(Atom(800,100,50,50))
-map.addcollidable(Wall(300,0,3))
+#map.addenemy(Atom(800,100,50,50))
+#map.addcollidable(Wall(600,0,10))
+map.addenemy(Scobot(900,200,20,30))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))
@@ -117,6 +122,7 @@ map.addenemy(Scobot(1200,200,20,30))
 map.addenemy(Scobot(1200,400,20,30))
 map.addenemy(Scobot(1200,450,20,30))
 """
+#scoreboard = ScoreBoard(gamearea)
 #map.addenemygroup(ScobotGroup(1000,300,5))
 #colidegroup = pygame.sprite.Group(collidable)
 

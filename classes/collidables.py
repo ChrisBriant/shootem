@@ -6,6 +6,7 @@ class Collidable(pygame.sprite.Sprite):
     def __init__(self, posx, posy, width, height,movable=False):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((width, height))
+        self.projectile = False
 
         self.image.fill((0,255,0))
 
@@ -51,6 +52,7 @@ class Wall(Collidable):
         self.launchcounter = 0
         self.image.fill((255,255,255))
         self.image.set_colorkey((255,255,255))
+        self.destructable = False
         #There is a minimum height of three
         if height < 3:
             height = 3

@@ -13,6 +13,7 @@ class Projectile(Collidable):
         self.destructable = False
         self.hitval = 1
         self.enemy = False #Means projectile from the player
+        self.projectile = True
 
         self.frames = [pygame.image.load(get_file_path("i","projbas" + "/projbas" + str(n) + ".png")) for n in range(9)]
 

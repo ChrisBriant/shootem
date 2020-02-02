@@ -99,7 +99,7 @@ class GunUpDown(Collidable):
 
 
 class Scobot(Collidable):
-    def __init__(self, posx, posy, width, height, movingdown):
+    def __init__(self, posx, posy, width, height, movingdown=True):
         Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 3
         self.image.fill((255,255,255))
@@ -195,7 +195,7 @@ class BoagGunship(Collidable):
             if self.rect.y in range(kwargs["playery"]-5,kwargs["playery"]+5):
                 #Shoot because the ship has crossed paths with the player
                 if self.shootcounter == 0:
-                    map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
+                    map.addprojectile(EnemyProjectileLeft(self.rect.x-20, self.rect.y + (self.height / 2), 20,10))
                 #control rate of fire
                 if self.shootcounter < 10:
                     self.shootcounter += 1
@@ -215,7 +215,7 @@ class BoagGunship(Collidable):
             else:
                 #Shoot
                 if self.shootcounter == 0:
-                    map.addprojectile(EnemyProjectileLeft(self.rect.x, self.rect.y + (self.height / 2), 20,10))
+                    map.addprojectile(EnemyProjectileLeft(self.rect.x-20, self.rect.y + (self.height / 2), 20,10))
                 #control rate of fire
                 if self.shootcounter < 10:
                     self.shootcounter += 1

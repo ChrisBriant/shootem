@@ -130,6 +130,7 @@ class Player(pygame.sprite.Sprite):
                 self.moveleft()
             elif keys[pygame.K_RIGHT] and self.rect.x < gamearea["w"] - self.width:
                 self.moveright()
+            #Need to stop player hitting bottom of scoreboard
             elif keys[pygame.K_UP] and self.rect.y > 0:
                 self.moveup()
             elif keys[pygame.K_DOWN] and self.rect.y < gamearea["h"] - self.height:
@@ -183,7 +184,7 @@ class Player(pygame.sprite.Sprite):
     #Detect screen catching player
     def catchscreen(self, xoffset):
         xoffset = xoffset*-1
-        print(xoffset, ",",self.rect.x)
+        #print(xoffset, ",",self.rect.x)
         if self.rect.x < xoffset:
             return True
         else:
@@ -192,7 +193,7 @@ class Player(pygame.sprite.Sprite):
     #Routine for player death
     def die(self):
         if not self.dead:
-            self.dead = True
+            #self.dead = True
             self.lives -= 1
             self.deathpos = (self.rect.x,self.rect.y)
             print("Hit!")

@@ -1,6 +1,15 @@
 from include import get_file_path
 from .collidables import Collidable
+from .scoreboard import ScoreBoard
 import pygame, os
+
+#Static method to get the enemies which collide with each other
+def enemiescollidewitheachother(enemyspritegroup):
+    enemiescollided = []
+    for e in enemyspritegroup:
+        collisions = pygame.sprite.spritecollide(e,enemyspritegroup,False)
+        enemiescollided.append([collided for collided in collisions if collided != e])
+    return [i for list in enemiescollided for i in list]
 
 class GameMap(pygame.sprite.Sprite):
 
@@ -9,16 +18,17 @@ class GameMap(pygame.sprite.Sprite):
         self.screen = screen
         self.collidables = pygame.sprite.Group()
         self.projectiles = pygame.sprite.Group()
-        self.enemies = pygame.sprite.Group()
+        #self.enemies = pygame.sprite.Group()
         self.player = player
         self.enemygroups = []
+        self.scoreboard = ScoreBoard(screen)
 
     def addcollidable(self, collidable):
         self.collidables.add(collidable)
 
     def addenemy(self, sprite):
         #Add to collidable group as well as enemy group for easier sorting
-        self.enemies.add(sprite)
+        #self.enemies.add(sprite)
         self.collidables.add(sprite)
 
     def addenemygroup(self, enemygroup):
@@ -30,6 +40,7 @@ class GameMap(pygame.sprite.Sprite):
 
     def addprojectile(self,sprite):
         self.projectiles.add(sprite)
+
 
     #Gets the collidable objects to draw on screen
     def getcollidables(self,xoffset):
@@ -76,8 +87,31 @@ class GameMap(pygame.sprite.Sprite):
                 sprites.append(sprite)
         #Detect enemies hitting each other
         #This will require the use of https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.groupcollide
+        #Filter the onscreen sprites into two groups
+        enemyspritesonscreen = pygame.sprite.Group()
+        furnitureonscreen = pygame.sprite.Group()
+        projectilesonscreen = pygame.sprite.Group()
 
-        #collidedsprites = pygame.sprite.groupcollide(onscreensprites,enemysprites)
+        for sprite in onscreensprites:
+            if sprite.destructable:
+                enemyspritesonscreen.add(sprite)
+            elif sprite.projectile:
+                projectilesonscreen.add(sprite)
+            else:
+                furnitureonscreen.add(sprite)
+        collidedsprites = pygame.sprite.groupcollide(enemyspritesonscreen,furnitureonscreen,False,False)
+        #print(collidedsprites)
+        for sprite in collidedsprites:
+            if sprite.destructable:
+                sprite.dead = True
+        #Deals with projectiles colliding with furniture it needs to be removed
+        collidedprojectiles = pygame.sprite.groupcollide(projectilesonscreen,furnitureonscreen,False,False)
+        for sprite in collidedprojectiles:
+            if sprite.projectile:
+                self.projectiles.remove(sprite)
+        #Deal with enemies colliding with each other
+        for e in enemiescollidewitheachother(enemyspritesonscreen):
+            e.dead = True
 
 
     def collision(self):
