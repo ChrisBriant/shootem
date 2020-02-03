@@ -21,7 +21,7 @@ class GameMap(pygame.sprite.Sprite):
         #self.enemies = pygame.sprite.Group()
         self.player = player
         self.enemygroups = []
-        self.scoreboard = ScoreBoard(screen)
+        self.scoreboard = ScoreBoard(screen, player.lives)
 
     def addcollidable(self, collidable):
         self.collidables.add(collidable)

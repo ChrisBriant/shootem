@@ -39,9 +39,13 @@ class Collidable(pygame.sprite.Sprite):
             return False
 
     def hit(self,hitval,**kwargs):
+        map = kwargs["map"]
+
         self.strength -= hitval
-        if self.strength <=0:
+        #Not self.dead prevents scoring more than once
+        if self.strength <=0 and not self.dead:
             self.dead = True
+            map.scoreboard.addscore(self.points)
 
 class Wall(Collidable):
 

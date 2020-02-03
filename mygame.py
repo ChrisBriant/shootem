@@ -68,14 +68,14 @@ def redrawGameWindow(totalscore):
     #goblin.draw(win)
     for bullet in bullets:
         bullet.draw(win)
-    font = pygame.font.Font('freesansbold.ttf', 14)
+    #font = pygame.font.Font('freesansbold.ttf', 14)
     #text = font.render(str(totalscore), True, (0,255,0), (0,0,255))
-    textsurface = font.render(str(totalscore), True, (0,0,0))
-    textrect = textsurface.get_rect()
+    #textsurface = font.render(str(totalscore), True, (0,0,0))
+    #textrect = textsurface.get_rect()
     #TextSurf, TextRect = text_objects(str(totalscore), font)
-    textrect.center = ((20),(20))
+    #textrect.center = ((20),(20))
     #textrect = pygame.draw.rect(win, (0,0,0), (10,10,100,100))
-    win.blit(textsurface, textrect)
+    #win.blit(textsurface, textrect)
     pygame.display.update()
 
 
@@ -186,10 +186,10 @@ while run:
     redrawGameWindow(0)
     #Detect collidion
     if map.collision():
-        ship.die()
+        ship.die(map,xoffset)
     #Ship collides with the left of the screen
     if ship.catchscreen(xoffset):
-        ship.die()
+        ship.die(map,xoffset)
     #For scrolling
     #side scrolling
     if xoffset > 0 - (gamearea["w"] / 2):
@@ -201,9 +201,9 @@ while run:
     #If dead then pressing space re-starts game
     if ship.dead:
         #Create new instance of ship -overwrite current instance
-        print(ship.deathpos)
+        #print(ship.deathpos)
         if keys[pygame.K_SPACE]:
-            lives = self.lives
+            lives = map.scoreboard.lives
             deathpos = list(ship.deathpos)
             ship = Player(deathpos[0], deathpos[1], 60,30,lives)
     #print(ship.rect.x,",", ship.rect.y," offset=", yoffset,"---", ship.calculateyoffset(screen,gamearea))

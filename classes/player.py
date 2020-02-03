@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
             self.image.blit(self.moveForward[0], (0,0))
             self.image.blit(self.deathSeq[self.deathCount], (0,0))
             if self.deathCount < 19:
-                print(self.deathCount)
+                #print(self.deathCount)
                 self.deathCount += 1
         else:
             #Normal movement
@@ -131,7 +131,7 @@ class Player(pygame.sprite.Sprite):
             elif keys[pygame.K_RIGHT] and self.rect.x < gamearea["w"] - self.width:
                 self.moveright()
             #Need to stop player hitting bottom of scoreboard
-            elif keys[pygame.K_UP] and self.rect.y > 0:
+            elif keys[pygame.K_UP] and self.rect.y > map.scoreboard.height:
                 self.moveup()
             elif keys[pygame.K_DOWN] and self.rect.y < gamearea["h"] - self.height:
                 self.movedown()
@@ -191,9 +191,14 @@ class Player(pygame.sprite.Sprite):
             return False
 
     #Routine for player death
-    def die(self):
+    def die(self,map,xoffset):
         if not self.dead:
-            #self.dead = True
+            self.dead = True
             self.lives -= 1
+            map.scoreboard.updatelives(self.lives)
+            #If statement below is for getting the player to jump forward if catching the screen
+            #To stop the insta death after pressing space
+            if self.rect.x == xoffset*-1:
+                self.rect.x += 100 + self.width
             self.deathpos = (self.rect.x,self.rect.y)
             print("Hit!")
