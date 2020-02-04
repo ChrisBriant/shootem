@@ -51,31 +51,21 @@ class projectile(object):
 def redrawGameWindow(totalscore):
     view.fill((0,0,0))
 
-    if ship.dead:
-        #alien1.draw(view)
-        #platformgroup.draw(view)
+    if ship.dead and ship.lives <= 0:
+        print("Here")
         ship.draw(view)
-        deathmessage.draw(view,xoffset,yoffset,screen)
+        gameover.draw(view,xoffset,yoffset,screen)
     else:
-        ship.draw(view)
-        #alien1.draw(view)
-        #platformgroup.draw(view)
-        onscreensprites = map.getcollidables(xoffset)
-        onscreensprites.draw(view)
-        map.updatecollidables(onscreensprites)
+        if ship.dead:
+            ship.draw(view)
+            deathmessage.draw(view,xoffset,yoffset,screen)
+        else:
+            ship.draw(view)
+            onscreensprites = map.getcollidables(xoffset)
+            onscreensprites.draw(view)
+            map.updatecollidables(onscreensprites)
     view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
     win.blit(view,(xoffset,yoffset))
-    #goblin.draw(win)
-    for bullet in bullets:
-        bullet.draw(win)
-    #font = pygame.font.Font('freesansbold.ttf', 14)
-    #text = font.render(str(totalscore), True, (0,255,0), (0,0,255))
-    #textsurface = font.render(str(totalscore), True, (0,0,0))
-    #textrect = textsurface.get_rect()
-    #TextSurf, TextRect = text_objects(str(totalscore), font)
-    #textrect.center = ((20),(20))
-    #textrect = pygame.draw.rect(win, (0,0,0), (10,10,100,100))
-    #win.blit(textsurface, textrect)
     pygame.display.update()
 
 
@@ -91,6 +81,7 @@ ship = Player(xplayerstartpos, yplayerstartpos, 60,30)
 
 #Messages
 deathmessage = OnScreenMessage(70,"YOU DIED!")
+gameover = OnScreenMessage(70,"GAME OVER!")
 
 
 #Create Level
@@ -130,8 +121,8 @@ map.addenemy(Scobot(1200,450,20,30))
 #platformsandplayer = pygame.sprite.Group(platform1, platform2, ship)
 #enemies sprite group
 #enemies = pygame.sprite.Group(alien1)
-shootLoop = 0
-bullets = []
+#shootLoop = 0
+#bullets = []
 run = True
 totalscore = 0
 xoffset = ship.calculatexoffset(screen,gamearea)
@@ -139,48 +130,21 @@ yoffset = ship.calculateyoffset(screen,gamearea)
 win.blit(view, (0,0))
 ship.draw(win)
 #mainloop
+
+#testcount = 0
 while run:
     clock.tick(27)
 
-    """
-    if shootLoop > 0:
-        shootLoop += 1
-    if shootLoop > 3:
-        shootLoop = 0
-        """
+    #testcount += 1
+    #print("Running",testcount)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    """
-    for bullet in bullets:
-        if  bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
-            if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
-                goblin.hit()
-                bullets.pop(bullets.index(bullet))
-
-        if bullet.x < 500 and bullet.x > 0:
-            bullet.x += bullet.vel
-        else:
-            bullets.pop(bullets.index(bullet))
-            """
 
     keys = pygame.key.get_pressed()
 
-    #For shooting to be used later
-    """
-    if keys[pygame.K_SPACE] and shootLoop == 0:
-        if ship.left:
-            facing = -1
-        else:
-            facing = 1
-
-        if len(bullets) < 5:
-            bullets.append(projectile(round(ship.x + ship.width // 2), round(ship.y + ship.height // 2), 6, (0,0,0), facing))
-
-        shootLoop = 1
-        """
     #Move player if up, left, or right keys pressed
     ship.moveplayer(keys, screen, gamearea, map)
     redrawGameWindow(0)

@@ -198,7 +198,7 @@ class Player(pygame.sprite.Sprite):
             map.scoreboard.updatelives(self.lives)
             #If statement below is for getting the player to jump forward if catching the screen
             #To stop the insta death after pressing space
-            if self.rect.x == xoffset*-1:
-                self.rect.x += 100 + self.width
+            if self.rect.x < xoffset*-1:
+                self.rect.x += 10 + self.width
             self.deathpos = (self.rect.x,self.rect.y)
             print("Hit!")
