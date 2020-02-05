@@ -1,6 +1,6 @@
 from classes.player import Player
 from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown, \
-    Kamakazie, HomingMissile, Atom
+    Kamakazie, HomingMissile, Atom, BoagSpider
 from classes.collidables import Collidable, Wall
 from classes.scoreboard import ScoreBoard
 from classes.gamemap import GameMap
@@ -93,7 +93,7 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(Rocket(1400,540,30,60))
 #map.addenemy(BoagGunship(800,0,60,40))
 #map.addenemy(BoagGunship(800,200,60,40))
-map.addenemy(Scobot(900,100,20,30))
+#map.addenemy(Scobot(900,100,20,30))
 #map.addenemy(BoagPulse(800,300,30,30,True,True))
 #map.addenemygroup(BoagPulseGroup(900,300,8,False))
 #map.addenemy(GunUpDown(800,0,20,30))
@@ -104,7 +104,8 @@ map.addenemy(Scobot(900,100,20,30))
 #map.addenemy(Atom(800,100,25,25,"R"))
 #map.addenemy(Atom(800,100,50,50))
 #map.addcollidable(Wall(600,0,10))
-map.addenemy(Scobot(900,200,20,30))
+#map.addenemy(Scobot(900,200,20,30))
+map.addenemy(BoagSpider(900,500,60,40,600))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))

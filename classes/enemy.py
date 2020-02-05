@@ -234,6 +234,110 @@ class BoagGunship(Collidable):
             self.dead = True
             """
 
+
+class BoagSpider(Collidable):
+    def __init__(self, posx, posy, width, height, pathlimit):
+        Collidable.__init__(self,posx,posy,width,height,True)
+        self.vel = 3
+        self.shootcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.destructable=True
+        self.points = 40
+        self.strength = 2
+        self.frameindex = 0
+        self.deathcount = 0
+        self.pathlimit = pathlimit
+        self.movingleft = True
+        self.frameindex = 0
+        self.animatecount = 0
+
+        #For targeting the player
+        self.targety = None
+
+
+        #load images
+        self.frames = [pygame.image.load(get_file_path("i","boagspider" + "/spider" + str(n) + ".png")) for n in range(9)]
+        self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(18)]
+
+    def move(self,**kwargs):
+        map = kwargs["map"]
+        xoffset = kwargs["xoffset"]
+
+        print(self.frameindex)
+        if self.animatecount < 4:
+            self.animatecount += 1
+        else:
+            self.animatecount = 0
+            if self.frameindex < 8:
+                self.frameindex += 1
+            else:
+                self.frameindex = 0
+        if self.dead:
+            self.rect.x = self.rect.x - self.vel
+            self.image = pygame.transform.scale(self.image,(50,50))
+            self.image.fill((255,255,255))
+            if self.deathcount < 4:
+                self.image.blit(self.frames[self.frameindex], (0,0))
+            self.image.blit(self.deathSeq[self.deathcount],(-10,-10))
+            if self.deathcount < 17:
+                self.deathcount += 1
+            else:
+                #Set flag for removal
+                self.remove = True
+        else:
+            print(self.rect.x,self.pathlimit, self.movingleft, xoffset+map.screen["w"])
+            if self.rect.x <= self.pathlimit:
+                self.movingleft = False
+            elif self.rect.x >= xoffset:
+                self.movingleft = True
+
+            if self.movingleft:
+                self.rect.x -= self.vel
+            else:
+                self.rect.x += self.vel
+
+            self.image.fill((255,255,255))
+            self.image.blit(self.frames[self.frameindex], (0,0))
+            #Shoot
+            """
+            if self.rect.y in range(kwargs["playery"]-5,kwargs["playery"]+5):
+                #Shoot because the ship has crossed paths with the player
+                if self.shootcounter == 0:
+                    map.addprojectile(EnemyProjectileLeft(self.rect.x-20, self.rect.y + (self.height / 2), 20,10))
+                #control rate of fire
+                if self.shootcounter < 10:
+                    self.shootcounter += 1
+                else:
+                    self.shootcounter = 0
+
+            self.targety = kwargs["playery"]
+            """
+
+
+            """
+            #Home in on player
+            if self.rect.y not in range(self.targety+5,self.targety+5):
+                if self.rect.y > self.targety:
+                    self.rect.y -= 2
+                else:
+                    self.rect.y += 2
+            else:
+                #Shoot
+                pass
+                if self.shootcounter == 0:
+                    map.addprojectile(EnemyProjectileLeft(self.rect.x-20, self.rect.y + (self.height / 2), 20,10))
+                #control rate of fire
+                if self.shootcounter < 10:
+                    self.shootcounter += 1
+                else:
+                    self.shootcounter = 0
+                #Reset target now that ship has moved
+                self.targety = kwargs["playery"]
+                #Move to player
+                """
+
+
 class Kamakazie(Collidable):
     def __init__(self, posx, posy, width, height):
         Collidable.__init__(self,posx,posy,width,height,True)
