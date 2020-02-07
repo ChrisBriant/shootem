@@ -77,3 +77,26 @@ class EnemyProjectileUp(Projectile):
         self.rect.y -= self.vel
         if self.shootcount < 16:
             self.shootcount += 1
+
+
+#Shoot a projectile diagonaly
+class EnemyProjectileDiagonal(Projectile):
+
+    def __init__(self,posx,posy,width,height,angle,right=False):
+        Projectile.__init__(self,posx,posy,width,height)
+        self.enemy = True
+        self.right = right
+        self.frames = [pygame.image.load(get_file_path("i","projd" + "/projd" + str(n) + ".png")) for n in range(17)]
+        self.angle = angle
+
+    def move(self,**kwargs)
+        if self.right:
+            self.image.blit(pygame.transform.rotate(self.frames[self.shootcount],180 - self.angle), (0,0))
+            self.rect.y -= self.vel
+            self.rect.x -= self.vel
+        else:
+            self.image.blit(pygame.transform.rotate(self.frames[self.shootcount],self.angle), (0,0))
+            self.rect.y -= self.vel
+            self.rect.x += self.vel    
+        if self.shootcount < 16:
+            self.shootcount += 1

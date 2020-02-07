@@ -5,7 +5,7 @@ from classes.collidables import Collidable, Wall
 from classes.scoreboard import ScoreBoard
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
-import pygame, os
+import pygame, os,math
 pygame.init()
 
 screen = { "w":1000, "h":600 }
@@ -65,7 +65,30 @@ def redrawGameWindow(totalscore):
             onscreensprites.draw(view)
             map.updatecollidables(onscreensprites)
     view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
+    #TESTING BELOW
+    spider.move(playerx=ship.rect.x,playery=ship.rect.y,map=map,xoffset=xoffset*-1)
+    spidergroup = pygame.sprite.Group()
+    spidergroup.add(spider)
+    spidergroup.draw(view)
+    triangle = spider.targetingtriangle.getpoints()
+    #Drawing a line at an angle
+    """
+    line = (300,300)
+    line_len = 50
+    angle1 = 35
+    angle2 = 70
+    point1 = (line[0] - math.cos(math.radians(angle1)) * line_len, line[1] - math.sin(math.radians(angle1)) * line_len)
+    point2 = (line[0] - math.cos(math.radians(angle2)) * line_len, line[1] - math.sin(math.radians(angle2)) * line_len)
+    """
+    #print(spider.targetingtriangle.spriteinside(ship))
+    # then render the line radar->(x,y)
+    #pygame.draw.line(view, (255,0,0), line, (point1[0],point1[1]), 1)
+    #pygame.draw.line(view, (255,0,0), line, (point2[0],point2[1]), 1)
+    #pygame.draw.line(view, (255,0,0), (point1[0],point1[1]), (point2[0],point2[1]), 1)
+    pygame.draw.polygon(view, (255,0,0), [triangle[0], triangle[1], triangle[2]])
+    ###################################
     win.blit(view,(xoffset,yoffset))
+
     pygame.display.update()
 
 
@@ -105,7 +128,8 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(Atom(800,100,50,50))
 #map.addcollidable(Wall(600,0,10))
 #map.addenemy(Scobot(900,200,20,30))
-map.addenemy(BoagSpider(900,500,60,40,600))
+#map.addenemy(BoagSpider(900,500,60,40,600,910))
+spider = BoagSpider(900,500,60,40,600,910)
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))

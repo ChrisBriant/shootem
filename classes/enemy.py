@@ -1,8 +1,10 @@
 from include import get_file_path
 from .collidables import Collidable
 from .projectiles import EnemyProjectileLeft, EnemyProjectileDown, EnemyProjectileUp
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 from random import randrange
-import pygame, os
+import pygame, os, math
 
 
 
@@ -233,10 +235,41 @@ class BoagGunship(Collidable):
         if self.strength <=0:
             self.dead = True
             """
+class TargetTriangle():
+    def __init__(self, posx, posy, angle1, angle2, length):
+        self.length = length
+        self.angle1 = angle1
+        self.angle2 = angle2
+        self.point0 = (posx,posy)
+        self.point1 = (self.point0[0] - math.cos(math.radians(angle1)) * length, self.point0[1] - math.sin(math.radians(angle1)) * length)
+        self.point2 = (self.point0[0] - math.cos(math.radians(angle2)) * length, self.point0[1] - math.sin(math.radians(angle2)) * length)
 
+        # then render the line radar->(x,y)
+        #pygame.draw.line(screen, Color("red"), line, (x,y), 1)
+
+    def updateposition(self,posx,posy,reverse=False):
+        if reverse:
+            angle1 = 180 - self.angle1
+            angle2 = 180 - self.angle2
+        else:
+            angle1 = self.angle1
+            angle2 = self.angle2
+        self.point0 = (posx,posy)
+        self.point1 = (self.point0[0] - math.cos(math.radians(angle1)) * self.length, self.point0[1] - math.sin(math.radians(angle1)) * self.length)
+        self.point2 = (self.point0[0] - math.cos(math.radians(angle2)) * self.length, self.point0[1] - math.sin(math.radians(angle2)) * self.length)
+
+    def getpoints(self):
+        return (self.point0,self.point1,self.point2)
+
+    #Detects the presence of a sprite inside the targeting triangle
+    def spriteinside(self,spritex,spritey):
+        point = Point(spritex, spritey)
+        points = self.getpoints()
+        polygon = Polygon([points[0], points[1], points[2]])
+        return polygon.contains(point)
 
 class BoagSpider(Collidable):
-    def __init__(self, posx, posy, width, height, pathlimit):
+    def __init__(self, posx, posy, width, height, leftlimit, rightlimit):
         Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 3
         self.shootcounter = 0
@@ -247,10 +280,12 @@ class BoagSpider(Collidable):
         self.strength = 2
         self.frameindex = 0
         self.deathcount = 0
-        self.pathlimit = pathlimit
+        self.leftlimit = leftlimit
+        self.rightlimit = rightlimit
         self.movingleft = True
         self.frameindex = 0
         self.animatecount = 0
+        self.targetingtriangle = TargetTriangle(self.rect.x,self.rect.y,35,70,400)
 
         #For targeting the player
         self.targety = None
@@ -258,13 +293,16 @@ class BoagSpider(Collidable):
 
         #load images
         self.frames = [pygame.image.load(get_file_path("i","boagspider" + "/spider" + str(n) + ".png")) for n in range(9)]
+        self.framesright = [pygame.image.load(get_file_path("i","boagspider-rght" + "/spider-r" + str(n) + ".png")) for n in range(9)]
         self.deathSeq = [pygame.image.load(get_file_path("i","explosion" + "/explosion" + str(n) + ".png")) for n in range(18)]
+
 
     def move(self,**kwargs):
         map = kwargs["map"]
         xoffset = kwargs["xoffset"]
+        playerx = kwargs["playerx"]
+        playery = kwargs["playery"]
 
-        print(self.frameindex)
         if self.animatecount < 4:
             self.animatecount += 1
         else:
@@ -286,20 +324,29 @@ class BoagSpider(Collidable):
                 #Set flag for removal
                 self.remove = True
         else:
-            print(self.rect.x,self.pathlimit, self.movingleft, xoffset+map.screen["w"])
-            if self.rect.x <= self.pathlimit:
+            #print(self.rect.x,self.pathlimit, self.movingleft, xoffset+map.screen["w"])
+            if self.rect.x <= self.leftlimit:
                 self.movingleft = False
-            elif self.rect.x >= xoffset:
+            elif self.rect.x >= self.rightlimit:
                 self.movingleft = True
 
+            self.image.fill((255,255,255))
             if self.movingleft:
                 self.rect.x -= self.vel
+                #Update targeting triangle
+                self.targetingtriangle.updateposition(self.rect.x,self.rect.y)
+                self.image.blit(self.frames[self.frameindex], (0,0))
             else:
                 self.rect.x += self.vel
+                #Update targeting triangle
+                self.targetingtriangle.updateposition(self.rect.x+self.width,self.rect.y,True)
+                self.image.blit(self.framesright[self.frameindex], (0,0))
 
-            self.image.fill((255,255,255))
-            self.image.blit(self.frames[self.frameindex], (0,0))
             #Shoot
+            if self.targetingtriangle.spriteinside(playerx,playery):
+                print("Inside")
+            else:
+                print("Outside")
             """
             if self.rect.y in range(kwargs["playery"]-5,kwargs["playery"]+5):
                 #Shoot because the ship has crossed paths with the player
