@@ -1,7 +1,7 @@
 from classes.player import Player
 from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown, \
-    Kamakazie, HomingMissile, Atom, BoagSpider
-from classes.collidables import Collidable, Wall
+    Kamakazie, HomingMissile, Atom, BoagSpider, BoagFighter
+from classes.collidables import Collidable, Wall, Floor1
 from classes.scoreboard import ScoreBoard
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
@@ -66,11 +66,13 @@ def redrawGameWindow(totalscore):
             map.updatecollidables(onscreensprites)
     view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
     #TESTING BELOW
+    """
     spider.move(playerx=ship.rect.x,playery=ship.rect.y,map=map,xoffset=xoffset*-1)
     spidergroup = pygame.sprite.Group()
     spidergroup.add(spider)
     spidergroup.draw(view)
     triangle = spider.targetingtriangle.getpoints()
+    """
     #Drawing a line at an angle
     """
     line = (300,300)
@@ -85,7 +87,7 @@ def redrawGameWindow(totalscore):
     #pygame.draw.line(view, (255,0,0), line, (point1[0],point1[1]), 1)
     #pygame.draw.line(view, (255,0,0), line, (point2[0],point2[1]), 1)
     #pygame.draw.line(view, (255,0,0), (point1[0],point1[1]), (point2[0],point2[1]), 1)
-    pygame.draw.polygon(view, (255,0,0), [triangle[0], triangle[1], triangle[2]])
+    #pygame.draw.polygon(view, (255,0,0), [triangle[0], triangle[1], triangle[2]])
     ###################################
     win.blit(view,(xoffset,yoffset))
 
@@ -128,8 +130,10 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(Atom(800,100,50,50))
 #map.addcollidable(Wall(600,0,10))
 #map.addenemy(Scobot(900,200,20,30))
-#map.addenemy(BoagSpider(900,500,60,40,600,910))
-spider = BoagSpider(900,500,60,40,600,910)
+#map.addcollidable(Floor1(600,570,10))
+map.addenemy(BoagSpider(840,530,60,40,600,840))
+#spider = BoagSpider(900,500,60,40,600,910)
+#map.addenemy(BoagFighter(900,200,55,20,map))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))

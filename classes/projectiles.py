@@ -86,17 +86,21 @@ class EnemyProjectileDiagonal(Projectile):
         Projectile.__init__(self,posx,posy,width,height)
         self.enemy = True
         self.right = right
-        self.frames = [pygame.image.load(get_file_path("i","projd" + "/projd" + str(n) + ".png")) for n in range(17)]
+        self.frames = [pygame.image.load(get_file_path("i","projboag" + "/projboag" + str(n) + ".png")) for n in range(14)]
         self.angle = angle
 
-    def move(self,**kwargs)
+    def move(self,**kwargs):
         if self.right:
-            self.image.blit(pygame.transform.rotate(self.frames[self.shootcount],180 - self.angle), (0,0))
+            self.image.fill((255,255,255))
+            self.image.set_colorkey((255,255,255))
+            self.image.blit(pygame.transform.rotate(self.frames[self.shootcount],(180 - self.angle)*-1), (0,0))
+            self.rect.y -= self.vel
+            self.rect.x += self.vel
+        else:
+            self.image.fill((255,255,255))
+            self.image.set_colorkey((255,255,255))
+            self.image.blit(pygame.transform.rotate(self.frames[self.shootcount],self.angle*-1), (0,0))
             self.rect.y -= self.vel
             self.rect.x -= self.vel
-        else:
-            self.image.blit(pygame.transform.rotate(self.frames[self.shootcount],self.angle), (0,0))
-            self.rect.y -= self.vel
-            self.rect.x += self.vel    
-        if self.shootcount < 16:
+        if self.shootcount < 13:
             self.shootcount += 1

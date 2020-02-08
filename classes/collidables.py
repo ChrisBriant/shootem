@@ -65,11 +65,25 @@ class Wall(Collidable):
         self.midsec = pygame.image.load(get_file_path("i","wall1/wall10.png"))
         #Draw the wall
         for i in range(0,height):
-            print(i)
             if i == 0:
                 self.image.blit(self.topend, (0,0))
             elif i == height:
-                print("HELLO MAN")
                 self.image.blit(self.botend, (0,i*30))
             else:
                 self.image.blit(self.midsec, (0,i*30))
+
+
+class Floor1(Collidable):
+
+    ## NOTE: Height is in blocks
+    def __init__(self,posx,posy,width):
+        Collidable.__init__(self,posx,posy,30*width,30)
+        self.vel = 3
+        self.launchcounter = 0
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+        self.destructable = False
+
+        self.picture = pygame.image.load(get_file_path("i","block1.png"))
+        for i in range(0,width):
+            self.image.blit(self.picture, (i*30,0))
