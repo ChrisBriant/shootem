@@ -1,35 +1,12 @@
 from classes.player import Player
-from classes.collidables import Collidable, Wall, Floor1
+#from classes.collidables import Collidable, Wall, Floor1
 from classes.scoreboard import ScoreBoard
-from classes.gamemap import GameMap
+#from classes.gamemap import GameMap
+from classes.levels import Level
 from classes.screenmessage import OnScreenMessage
 import pygame, os,math
 
 pygame.init()
-
-screen = { "w":1000, "h":600 }
-gamearea = {"w":4000,"h":600 }
-
-win = pygame.display.set_mode((screen["w"],screen["h"]))
-view = pygame.Surface((gamearea["w"],gamearea["h"]))
-pygame.display.set_caption("First Game")
-
-
-#Get the filepath
-def get_file_path(type,filename):
-    if type == "i":
-        return os.path.join("images", filename)
-
-#Test collision of sprite on top of another
-def collideontop(topsprite,bottomspritegrp):
-    collision = False
-    for sprite in bottomspritegrp.sprites():
-        if (sprite.rect.x - topsprite.width) <= topsprite.rect.x <= (sprite.rect.x + sprite.width) \
-            and (sprite.rect.y) <= topsprite.rect.y + topsprite.height <= (sprite.rect.y + sprite.height):
-            collision = True
-    return collision
-
-bg = pygame.image.load(get_file_path("i","bg.jpg"))
 
 clock = pygame.time.Clock()
 
@@ -54,10 +31,16 @@ def redrawGameWindow(totalscore):
 
     pygame.display.update()
 
+screen = { "w":1000, "h":600 }
+#gamearea = {"w":4000,"h":600 }
 
-xplayerstartpos = 200
-yplayerstartpos = 100
-ship = Player(xplayerstartpos, yplayerstartpos, 60,30)
+win = pygame.display.set_mode((screen["w"],screen["h"]))
+pygame.display.set_caption("First Game")
+
+
+#xplayerstartpos = 200
+#yplayerstartpos = 100
+ship = Player(0, 0, 60,30)
 
 #Messages
 deathmessage = OnScreenMessage(70,"YOU DIED!")
@@ -65,7 +48,12 @@ gameover = OnScreenMessage(70,"GAME OVER!")
 
 
 #Create Level
-map = GameMap(gamearea,screen, ship)
+level = Level(ship,screen)
+level.loadlevel(1)
+map = level.map
+gamearea = level.gamearea
+#The view containing all of the objects
+view = pygame.Surface((gamearea["w"],gamearea["h"]))
 
 run = True
 totalscore = 0
@@ -86,7 +74,7 @@ while run:
     keys = pygame.key.get_pressed()
 
     #Move player if up, left, or right keys pressed
-    ship.moveplayer(keys, screen, gamearea, map)
+    ship.moveplayer(keys, screen, gamearea, map,xoffset*-1)
     redrawGameWindow(0)
     #Detect collidion
     if map.collision():
@@ -106,6 +94,7 @@ while run:
         if keys[pygame.K_SPACE]:
             lives = map.scoreboard.lives
             deathpos = list(ship.deathpos)
-            ship = Player(deathpos[0], deathpos[1], 60,30,lives)
+            map.player = Player(deathpos[0], deathpos[1], 60,30,lives)
+            ship = map.player
 
 pygame.quit()

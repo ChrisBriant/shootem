@@ -39,19 +39,37 @@ class Player(pygame.sprite.Sprite):
        self.death_drop_count = 5
        self.deathpos = (0,0)
        self.rateoffirecount = 0
+       #Initiation
+       self.init = True
+       self.initcount = 0
+       self.alpha = 255
 
 
     def hit(self):
         print("Hit Goblin!")
 
     def draw(self, view):
+        #self.image.fill((255, 255, 255, self.alpha), special_flags=pygame.BLEND_RGBA_MULT)
         self.image.fill((255,255,255))
         self.image.set_colorkey((255,255,255))
+        self.image.set_alpha(self.alpha) #Set transparancy
 
         if self.walkCount + 1 > 9:
             self.walkCount = 7
         if self.standing:
             self.walkCount = 0
+
+        #Control transparancy on initiation of player for invulnerability at start of level
+        if self.init and self.initcount % 10 != 0:
+            self.alpha -= 25.5
+        else:
+            self.alpha = 255
+
+        if self.initcount >= 100:
+            self.init = False
+            self.alpha = 255
+        else:
+            self.initcount += 1
 
         if self.dead:
             #Animate death sequence
@@ -113,7 +131,7 @@ class Player(pygame.sprite.Sprite):
         self.standing = False
 
 
-    def moveplayer(self,keys,screen, gamearea,map):
+    def moveplayer(self,keys,screen, gamearea,map,xoffset):
         #Update the map with the player position
         #map.playerpos = (self.rect.x,self.rect.y)
 
@@ -126,9 +144,10 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.rect.y += 6
         else:
+            print(self.rect.x,xoffset,xoffset + screen["w"])
             if keys[pygame.K_LEFT] and self.rect.x > 0:
                 self.moveleft()
-            elif keys[pygame.K_RIGHT] and self.rect.x < gamearea["w"] - self.width:
+            elif keys[pygame.K_RIGHT] and self.rect.x < gamearea["w"] - self.width and not self.rect.x > xoffset + (screen["w"] - (self.width + 10)):
                 self.moveright()
             #Need to stop player hitting bottom of scoreboard
             elif keys[pygame.K_UP] and self.rect.y > map.scoreboard.height:
@@ -145,6 +164,7 @@ class Player(pygame.sprite.Sprite):
                     self.rateoffirecount -= 1
             else:
                 self.standing = True
+                self.rect.x += 1
                 self.walkCount = 0
 
             #Set jump in motion
