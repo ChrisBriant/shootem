@@ -66,7 +66,8 @@ class Player(pygame.sprite.Sprite):
             self.alpha = 255
 
         if self.initcount >= 100:
-            self.init = False
+            #Blank out for testing -make permanently invulnerable
+            #self.init = False
             self.alpha = 255
         else:
             self.initcount += 1
@@ -144,7 +145,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.rect.y += 6
         else:
-            print(self.rect.x,xoffset,xoffset + screen["w"])
+            print(self.rect.x, self.rect.y)
             if keys[pygame.K_LEFT] and self.rect.x > 0:
                 self.moveleft()
             elif keys[pygame.K_RIGHT] and self.rect.x < gamearea["w"] - self.width and not self.rect.x > xoffset + (screen["w"] - (self.width + 10)):
@@ -212,7 +213,7 @@ class Player(pygame.sprite.Sprite):
 
     #Routine for player death
     def die(self,map,xoffset):
-        if not self.dead:
+        if not self.dead and not self.init:
             self.dead = True
             self.lives -= 1
             map.scoreboard.updatelives(self.lives)

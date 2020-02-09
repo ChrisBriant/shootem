@@ -45,9 +45,11 @@ class Rocket(Collidable):
         #pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
         """
 
+    """
     def draw(self,view):
         print("Drawing")
         self.draw(view)
+        """
 
     def move(self,**kwargs):
         self.launchcounter += 1
@@ -623,7 +625,7 @@ class BoagPulse(Collidable):
         self.image.set_colorkey((255,255,255))
         self.movingdown=movingdown
         self.destructable=True
-        self.points = 10
+        self.points = 20
         self.strength = 1
         self.frameindex = 0
         self.deathcount = 0
@@ -663,7 +665,6 @@ class BoagPulse(Collidable):
                 self.remove = True
         else:
             #Control wave movement
-            print(self.movingdown, " ", self.rect.y, " ", self.maxy)
             if self.wave:
                 if self.movingdown:
                     self.rect.y += 10
@@ -796,6 +797,9 @@ class EnemyGroup():
         self.startpos = posy
         self.endpos = posy + ( 30 * (height-1))
 
+    def move(self,**kwargs):
+        pass
+
 
 class ScobotGroup(EnemyGroup):
     def __init__(self, posx, posy, height):
@@ -837,6 +841,18 @@ class ScobotGroup(EnemyGroup):
             self.movecount = 5
         else:
             self.movecount -= 1
+
+
+
+class ScobotWall(EnemyGroup):
+    def __init__(self, posx, posy, height):
+        EnemyGroup.__init__(self,posx,posy,height)
+        self.enemies.append(Scobot(self.x,self.y,20,30,False))
+
+        for i in range(height-1):
+            self.y = self.y + 30
+            self.enemies.append(Scobot(self.x,self.y,20,30,False))
+
 
 
 class BoagPulseGroup(EnemyGroup):

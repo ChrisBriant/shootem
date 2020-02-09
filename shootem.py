@@ -3,7 +3,7 @@ from classes.player import Player
 from classes.scoreboard import ScoreBoard
 #from classes.gamemap import GameMap
 from classes.levels import Level
-from classes.screenmessage import OnScreenMessage
+from classes.screenmessage import OnScreenMessage, FlashingText
 import pygame, os,math
 
 pygame.init()
@@ -21,6 +21,7 @@ def redrawGameWindow(totalscore):
         if ship.dead:
             ship.draw(view)
             deathmessage.draw(view,xoffset,yoffset,screen)
+            pressanykey.draw(view,0,100,xoffset,yoffset,screen)
         else:
             ship.draw(view)
             onscreensprites = map.getcollidables(xoffset)
@@ -45,6 +46,7 @@ ship = Player(0, 0, 60,30)
 #Messages
 deathmessage = OnScreenMessage(70,"YOU DIED!")
 gameover = OnScreenMessage(70,"GAME OVER!")
+pressanykey = FlashingText(26,"Press any key to continue")
 
 
 #Create Level

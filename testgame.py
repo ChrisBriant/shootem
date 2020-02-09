@@ -1,6 +1,6 @@
 from classes.player import Player
 from classes.enemy import Rocket, Scobot, ScobotGroup, BoagGunship, BoagPulse, BoagPulseGroup, GunUpDown, \
-    Kamakazie, HomingMissile, Atom, BoagSpider, BoagFighter
+    Kamakazie, HomingMissile, Atom, BoagSpider, BoagFighter, ScobotWall
 from classes.collidables import Collidable, Wall, Floor1
 from classes.scoreboard import ScoreBoard
 from classes.gamemap import GameMap
@@ -131,9 +131,10 @@ map = GameMap(gamearea,screen, ship)
 #map.addcollidable(Wall(600,0,10))
 #map.addenemy(Scobot(900,200,20,30))
 #map.addcollidable(Floor1(600,570,10))
-map.addenemy(BoagSpider(840,530,60,40,600,840))
+#map.addenemy(BoagSpider(840,530,60,40,600,840))
 #spider = BoagSpider(900,500,60,40,600,910)
 #map.addenemy(BoagFighter(900,200,55,20,map))
+map.addenemygroup(ScobotWall(600,100,10))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))
@@ -175,7 +176,7 @@ while run:
     keys = pygame.key.get_pressed()
 
     #Move player if up, left, or right keys pressed
-    ship.moveplayer(keys, screen, gamearea, map)
+    ship.moveplayer(keys, screen, gamearea, map,xoffset*-1)
     redrawGameWindow(0)
     #Detect collidion
     if map.collision():
