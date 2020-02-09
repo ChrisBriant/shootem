@@ -1,4 +1,4 @@
-from include import get_file_path, collideontop
+from include import get_file_path #, collideontop
 import pygame, os
 
 class Collidable(pygame.sprite.Sprite):

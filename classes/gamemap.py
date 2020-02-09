@@ -18,6 +18,7 @@ class GameMap(pygame.sprite.Sprite):
         self.screen = screen
         self.collidables = pygame.sprite.Group()
         self.projectiles = pygame.sprite.Group()
+        self.collectables = pygame.sprite.Group()
         #self.enemies = pygame.sprite.Group()
         self.player = player
         self.enemygroups = []
@@ -51,6 +52,8 @@ class GameMap(pygame.sprite.Sprite):
     def addprojectile(self,sprite):
         self.projectiles.add(sprite)
 
+    def addcollectable(self, collectable):
+        self.collectables.add(collectable)
 
     #Gets the collidable objects to draw on screen
     def getcollidables(self,xoffset):
@@ -63,12 +66,11 @@ class GameMap(pygame.sprite.Sprite):
                 del p
         collidables = self.collidables.sprites() + projectiles
 
-        #print("Col count", ",", len(projectiles))
-
         for collidable in collidables:
             #Remove if it has been destroyed
             if collidable.remove:
                 self.collidables.remove(collidable)
+
             #Animate
             #Moving whole group
             if collidable.group:
@@ -76,14 +78,15 @@ class GameMap(pygame.sprite.Sprite):
                 if group.onscreen(xoffset*-1,self.screen):
                     if collidable.movable:
                         collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self,xoffset=xoffset*-1)
-                    onscreensprites.add(collidable)
             #Only display if onscreen and not group
             if collidable.onscreen(xoffset*-1,self.screen) and not collidable.group:
                 if(collidable.movable):
                     collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self,xoffset=xoffset*-1)
                 onscreensprites.add(collidable)
-
-
+        #Animate collectables
+        onscreencollectables = [c for c in self.collectables if c.onscreen(xoffset*-1,self.screen)]
+        [c.move() for c in onscreencollectables]
+        [onscreensprites.add(c) for c in onscreencollectables]
         #Update movement for enemy groups
         [eg.move() for eg in self.enemygroups]
         return onscreensprites
@@ -101,7 +104,6 @@ class GameMap(pygame.sprite.Sprite):
                     self.projectiles.remove(proj)
                 sprites.append(sprite)
         #Detect enemies hitting each other
-        #This will require the use of https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.groupcollide
         #Filter the onscreen sprites into two groups
         enemyspritesonscreen = pygame.sprite.Group()
         furnitureonscreen = pygame.sprite.Group()
@@ -127,6 +129,9 @@ class GameMap(pygame.sprite.Sprite):
         #Deal with enemies colliding with each other
         for e in enemiescollidewitheachother(enemyspritesonscreen):
             e.dead = True
+        #Deal with collectables
+        collidedcollectables = pygame.sprite.spritecollide(self.player,self.collectables,False)
+        [c.performaction() for c in collidedcollectables]
 
 
     def collision(self):

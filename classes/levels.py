@@ -1,6 +1,7 @@
 from include import get_file_path
 from .enemy import *
 from .collidables import *
+from .collectables import *
 from .gamemap import GameMap
 import pygame, os
 
@@ -10,17 +11,20 @@ class Level():
     def __init__(self, player, screen):
         self.gamearea = {"w":0,"h":0 }
         self.player = player
+        self.screen = screen
         self.map = GameMap(self.gamearea,screen,player)
+        self.levelno = 1
 
 
     def loadlevel(self,levelnumber):
         if levelnumber == 1:
+            self.levelno = 1
             #Define level 1
             self.gamearea = {"w":10000,"h":600}
             self.map.gamearea = self.gamearea
             #self.player.rect.x = 100
             #self.player.rect.y = 300
-            self.player.rect.x = 9900
+            self.player.rect.x = 9700
             self.player.rect.y = 300
 
             #Add objects
@@ -75,6 +79,21 @@ class Level():
             self.map.addenemy(GunUpDown(9000,370,20,30,False))
             self.map.addcollidable(Wall(9980,0,20))
             self.map.addenemy(BoagGunship(9800,200,60,40))
+            self.map.addcollectable(WormHole(9870,260,30,70,self))
             #self.map.addcollidable(Wall(600,0,10))
             #self.map.addcollidable(Wall(1200,100,10))
             #self.map.addcollidable(Wall(2300,100,10))
+        elif levelnumber == 2:
+            print("NEW LEVEL")
+            self.levelno = 2
+            self.gamearea = {"w":10000,"h":600}
+            #Reinitialise map
+            self.map = GameMap(self.gamearea,self.screen,self.player)
+            self.map.gamearea = self.gamearea
+            #self.player.rect.x = 100
+            #self.player.rect.y = 300
+            self.player.rect.x = 100
+            self.player.rect.y = 200
+            self.player.newlevel = True
+
+            self.map.addenemygroup(ScobotWall(800,100,10))

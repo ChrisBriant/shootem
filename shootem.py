@@ -85,9 +85,14 @@ while run:
     if ship.catchscreen(xoffset):
         ship.die(map,xoffset)
     #For side scrolling
-    print("xoffset",xoffset, 0 - (gamearea["w"]) )
+    print(ship.rect.x, xoffset)
     if xoffset > 0 - (gamearea["w"]-screen["w"]):
         xoffset -= 1
+    #Reset offset if on new level
+    if ship.newlevel:
+        xoffset = 0
+        map = level.map
+        ship.newlevel = False
 
     #Detect collision between ship and enemies
 

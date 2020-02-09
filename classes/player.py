@@ -43,6 +43,7 @@ class Player(pygame.sprite.Sprite):
        self.init = True
        self.initcount = 0
        self.alpha = 255
+       self.newlevel = False
 
 
     def hit(self):

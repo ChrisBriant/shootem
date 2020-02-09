@@ -5,6 +5,7 @@ from classes.collidables import Collidable, Wall, Floor1
 from classes.scoreboard import ScoreBoard
 from classes.gamemap import GameMap
 from classes.screenmessage import OnScreenMessage
+from classes.collectables import *
 import pygame, os,math
 pygame.init()
 
@@ -119,9 +120,9 @@ map = GameMap(gamearea,screen, ship)
 #map.addenemy(Rocket(1400,540,30,60))
 #map.addenemy(BoagGunship(800,0,60,40))
 #map.addenemy(BoagGunship(800,200,60,40))
-map.addenemy(Scobot(900,100,20,30))
+#map.addenemy(Scobot(900,100,20,30))
 #map.addenemy(BoagPulse(800,300,30,30,True,True))
-map.addenemygroup(BoagPulseGroup(1500,300,8,False))
+#map.addenemygroup(BoagPulseGroup(1500,300,8,False))
 #map.addenemy(GunUpDown(800,0,20,30))
 #map.addenemy(GunUpDown(400,560,20,30,False))
 #map.addenemy(Kamakazie(800,100,55,20))
@@ -136,6 +137,7 @@ map.addenemygroup(BoagPulseGroup(1500,300,8,False))
 #spider = BoagSpider(900,500,60,40,600,910)
 #map.addenemy(BoagFighter(900,200,55,20,map))
 #map.addenemygroup(ScobotWall(600,100,10))
+map.addcollectable(WormHole(300,300,30,70))
 """
 map.addenemy(Scobot(400,100,20,30))
 map.addenemy(Scobot(600,200,20,30))
@@ -145,7 +147,7 @@ map.addenemy(Scobot(1200,400,20,30))
 map.addenemy(Scobot(1200,450,20,30))
 """
 #scoreboard = ScoreBoard(gamearea)
-map.addenemygroup(ScobotGroup(1000,300,5))
+#map.addenemygroup(ScobotGroup(1000,300,5))
 #colidegroup = pygame.sprite.Group(collidable)
 
 #group containing player and platforms
