@@ -104,7 +104,7 @@ class GunUpDown(Collidable):
 
 
 class Scobot(Collidable):
-    def __init__(self, posx, posy, width, height, movingdown=True):
+    def __init__(self, posx, posy, width, height, movingdown=True, group=False):
         Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 3
         self.image.fill((255,255,255))
@@ -115,6 +115,7 @@ class Scobot(Collidable):
         self.strength = 1
         self.frameindex = 0
         self.deathcount = 0
+        self.group = group
 
         #load images
         self.frames = [pygame.image.load(get_file_path("i","scobot" + "/scobot" + str(n) + ".png")) for n in range(4)]
@@ -219,7 +220,7 @@ class BoagGunship(Collidable):
         self.image.fill((255,255,255))
         self.image.set_colorkey((255,255,255))
         self.destructable=True
-        self.points = 10
+        self.points = 40
         self.strength = 3
         self.frameindex = 0
         self.deathcount = 0
@@ -618,7 +619,7 @@ class HomingMissile(Collidable):
 
 class BoagPulse(Collidable):
 
-    def __init__(self, posx, posy, width, height, movingdown, wave=False):
+    def __init__(self, posx, posy, width, height, movingdown, wave=False, group=False):
         Collidable.__init__(self,posx,posy,width,height,True)
         self.vel = 3
         self.image.fill((255,255,255))
@@ -629,6 +630,7 @@ class BoagPulse(Collidable):
         self.strength = 1
         self.frameindex = 0
         self.deathcount = 0
+        self.group = group
         #For wave movement pattern
         self.wave = wave
         if movingdown:
@@ -800,22 +802,31 @@ class EnemyGroup():
     def move(self,**kwargs):
         pass
 
+    def onscreen(self,xoffset,screen):
+        #Caculate object within screen area
+        screenend = screen["w"] + xoffset
+        onscreen = False
+        for e in self.enemies:
+            if e.rect.x  + e.rect.width > xoffset and e.rect.x < screenend:
+                onscreen = True
+        return onscreen
+
 
 class ScobotGroup(EnemyGroup):
     def __init__(self, posx, posy, height):
         EnemyGroup.__init__(self,posx,posy,height)
-        self.enemies.append(Scobot(self.x,self.y,20,30,False))
+        self.enemies.append(Scobot(self.x,self.y,20,30,False,True))
         self.movecount = 5
 
         for i in range(height-1):
             self.x = self.x + 25
             self.y = self.y + 30
-            self.enemies.append(Scobot(self.x,self.y,20,30,False))
+            self.enemies.append(Scobot(self.x,self.y,20,30,False,True))
         #go backwards
         for i in range(height-1):
             self.x = self.x + 25
             self.y = self.y - 30
-            self.enemies.append(Scobot(self.x,self.y,20,30,True))
+            self.enemies.append(Scobot(self.x,self.y,20,30,True,True))
 
 
 
@@ -847,11 +858,11 @@ class ScobotGroup(EnemyGroup):
 class ScobotWall(EnemyGroup):
     def __init__(self, posx, posy, height):
         EnemyGroup.__init__(self,posx,posy,height)
-        self.enemies.append(Scobot(self.x,self.y,20,30,False))
+        self.enemies.append(Scobot(self.x,self.y,20,30,False,True))
 
         for i in range(height-1):
             self.y = self.y + 30
-            self.enemies.append(Scobot(self.x,self.y,20,30,False))
+            self.enemies.append(Scobot(self.x,self.y,20,30,False,True))
 
 
 
@@ -869,10 +880,10 @@ class BoagPulseGroup(EnemyGroup):
         for i in range(0,width):
             ## NOTE: Need to try to get a gap between the enemies
             #Up boagpulse
-            self.enemies.append(BoagPulse(posx + self.gap + (60 * i),posy,30,30,False,wave))
+            self.enemies.append(BoagPulse(posx + self.gap + (60 * i),posy,30,30,False,wave,True))
             #Down boagpulse
             self.gap += 20
-            self.enemies.append(BoagPulse(posx + self.gap + 30 + (60 * i),posy + 70,30,30,False,wave))
+            self.enemies.append(BoagPulse(posx + self.gap + 30 + (60 * i),posy + 70,30,30,False,wave,True))
             self.gap += 20
 
     def move(self,**kwargs):

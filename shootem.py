@@ -85,7 +85,8 @@ while run:
     if ship.catchscreen(xoffset):
         ship.die(map,xoffset)
     #For side scrolling
-    if xoffset > 0 - (gamearea["w"] / 2):
+    print("xoffset",xoffset, 0 - (gamearea["w"]) )
+    if xoffset > 0 - (gamearea["w"]-screen["w"]):
         xoffset -= 1
 
     #Detect collision between ship and enemies

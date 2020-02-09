@@ -20,7 +20,7 @@ class Level():
             self.map.gamearea = self.gamearea
             #self.player.rect.x = 100
             #self.player.rect.y = 300
-            self.player.rect.x = 5000
+            self.player.rect.x = 9900
             self.player.rect.y = 300
 
             #Add objects
@@ -52,6 +52,29 @@ class Level():
             self.map.addenemy(Scobot(5600,50,20,30))
             self.map.addenemy(Scobot(5700,500,20,30))
             self.map.addenemy(BoagPulse(6000,150,30,30,True,True))
+            self.map.addcollidable(Wall(6100,0,15))
+            self.map.addcollidable(Wall(6500,200,15))
+            self.map.addcollidable(Wall(7000,0,15))
+            self.map.addenemy(Scobot(6300,500,20,30))
+            self.map.addenemy(Scobot(6700,100,20,30))
+            self.map.addenemy(Scobot(7300,500,20,30))
+            self.map.addenemygroup(ScobotWall(7500,100,15))
+            self.map.addenemygroup(ScobotWall(7800,200,10))
+            self.map.addenemygroup(ScobotWall(8000,100,15))
+            self.map.addcollidable(Wall(8200,0,6))
+            self.map.addcollidable(Wall(9380,0,6))
+            self.map.addcollidable(Floor1(8200,170,40))
+            self.map.addcollidable(Floor1(8200,400,40))
+            self.map.addcollidable(Wall(8200,430,6))
+            self.map.addcollidable(Wall(9380,430,6))
+            self.map.addenemy(GunUpDown(8400,200,20,30))
+            self.map.addenemy(GunUpDown(8600,370,20,30,False))
+            self.map.addenemygroup(ScobotGroup(9000,250,5))
+            self.map.addenemygroup(ScobotGroup(9300,250,5))
+            self.map.addenemy(GunUpDown(8800,200,20,30))
+            self.map.addenemy(GunUpDown(9000,370,20,30,False))
+            self.map.addcollidable(Wall(9980,0,20))
+            self.map.addenemy(BoagGunship(9800,200,60,40))
             #self.map.addcollidable(Wall(600,0,10))
             #self.map.addcollidable(Wall(1200,100,10))
             #self.map.addcollidable(Wall(2300,100,10))

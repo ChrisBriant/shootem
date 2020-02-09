@@ -38,6 +38,16 @@ class GameMap(pygame.sprite.Sprite):
             print(e)
             self.collidables.add(e)
 
+    def getenemygroup(self,sprite):
+        enemygroup = None
+
+        for eg in self.enemygroups:
+            for e in eg.enemies:
+                if sprite == e:
+                    enemygroup = eg
+        return enemygroup
+
+
     def addprojectile(self,sprite):
         self.projectiles.add(sprite)
 
@@ -60,14 +70,19 @@ class GameMap(pygame.sprite.Sprite):
             if collidable.remove:
                 self.collidables.remove(collidable)
             #Animate
-            #Running this for all sprites might slow down the computer
-            #Having to run it outside of the if onscreen condition because if not
-            # then it will render the distance incorrectly
-            if(collidable.movable):
-                collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self,xoffset=xoffset*-1)
-            #Only display if onscreen
-            if collidable.onscreen(xoffset*-1,self.screen):
+            #Moving whole group
+            if collidable.group:
+                group = self.getenemygroup(collidable)
+                if group.onscreen(xoffset*-1,self.screen):
+                    if collidable.movable:
+                        collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self,xoffset=xoffset*-1)
+                    onscreensprites.add(collidable)
+            #Only display if onscreen and not group
+            if collidable.onscreen(xoffset*-1,self.screen) and not collidable.group:
+                if(collidable.movable):
+                    collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self,xoffset=xoffset*-1)
                 onscreensprites.add(collidable)
+
 
         #Update movement for enemy groups
         [eg.move() for eg in self.enemygroups]

@@ -145,7 +145,6 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.rect.y += 6
         else:
-            print(self.rect.x, self.rect.y)
             if keys[pygame.K_LEFT] and self.rect.x > 0:
                 self.moveleft()
             elif keys[pygame.K_RIGHT] and self.rect.x < gamearea["w"] - self.width and not self.rect.x > xoffset + (screen["w"] - (self.width + 10)):
