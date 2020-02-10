@@ -23,6 +23,7 @@ class GameMap(pygame.sprite.Sprite):
         self.player = player
         self.enemygroups = []
         self.scoreboard = ScoreBoard(screen, player.lives)
+        self.enemieskilled = 0
 
     def addcollidable(self, collidable):
         self.collidables.add(collidable)
@@ -78,6 +79,7 @@ class GameMap(pygame.sprite.Sprite):
                 if group.onscreen(xoffset*-1,self.screen):
                     if collidable.movable:
                         collidable.move(playerx=self.player.rect.x,playery=self.player.rect.y,map=self,xoffset=xoffset*-1)
+                    onscreensprites.add(collidable)
             #Only display if onscreen and not group
             if collidable.onscreen(xoffset*-1,self.screen) and not collidable.group:
                 if(collidable.movable):

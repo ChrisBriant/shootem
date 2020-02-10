@@ -1,5 +1,6 @@
 from include import get_file_path
 from .collidables import Collidable
+from .screenmessage import OnScreenMessage,FlashingText
 import pygame, os
 
 class Collectable(Collidable):
@@ -25,9 +26,9 @@ class WormHole(Collectable):
         #player = kwargs["player"]
         #map = kwargs["map"]
         #level = kwargs["level"]
-        print("Collectable action goes here")
+        self.level.levelovermessage = OnScreenMessage(70,"Level " + str(self.level.levelno) + " complete")
         self.level.loadlevel(self.level.levelno+1)
-
+        self.level.leveltrans = True
 
     def move(self,**kwargs):
         self.image.fill((255,255,255))

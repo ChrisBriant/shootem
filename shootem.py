@@ -12,21 +12,27 @@ clock = pygame.time.Clock()
 
 def redrawGameWindow(totalscore):
     view.fill((0,0,0))
+    view.blit(level.bg,(0 - xoffset,0-yoffset))
 
     if ship.dead and ship.lives <= 0:
         print("Here")
         ship.draw(view)
         gameover.draw(view,xoffset,yoffset,screen)
     else:
-        if ship.dead:
-            ship.draw(view)
-            deathmessage.draw(view,xoffset,yoffset,screen)
+        if level.leveltrans == True:
+            #Level transition screen
+            level.levelovermessage.draw(view,xoffset,yoffset,screen)
             pressanykey.draw(view,0,100,xoffset,yoffset,screen)
         else:
-            ship.draw(view)
-            onscreensprites = map.getcollidables(xoffset)
-            onscreensprites.draw(view)
-            map.updatecollidables(onscreensprites)
+            if ship.dead:
+                ship.draw(view)
+                deathmessage.draw(view,xoffset,yoffset,screen)
+                pressanykey.draw(view,0,100,xoffset,yoffset,screen)
+            else:
+                ship.draw(view)
+                onscreensprites = map.getcollidables(xoffset)
+                onscreensprites.draw(view)
+                map.updatecollidables(onscreensprites)
     view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
     win.blit(view,(xoffset,yoffset))
 
@@ -92,6 +98,7 @@ while run:
     if ship.newlevel:
         xoffset = 0
         map = level.map
+        map.scoreboard.level = level.levelno
         ship.newlevel = False
 
     #Detect collision between ship and enemies

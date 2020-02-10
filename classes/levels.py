@@ -14,6 +14,9 @@ class Level():
         self.screen = screen
         self.map = GameMap(self.gamearea,screen,player)
         self.levelno = 1
+        self.bg = pygame.Surface((screen["w"], screen["h"]))
+        self.leveltrans = False
+        self.levelovermessage = OnScreenMessage(70,"")
 
 
     def loadlevel(self,levelnumber):
@@ -24,8 +27,11 @@ class Level():
             self.map.gamearea = self.gamearea
             #self.player.rect.x = 100
             #self.player.rect.y = 300
-            self.player.rect.x = 9700
+            self.player.rect.x = 9800
             self.player.rect.y = 300
+            #Background
+            self.bgimage = pygame.image.load(get_file_path("i","bg1.jpg"))
+            self.bg.blit(self.bgimage, (0,0))
 
             #Add objects
             self.map.addenemy(Scobot(600,100,20,30))
@@ -96,4 +102,6 @@ class Level():
             self.player.rect.y = 200
             self.player.newlevel = True
 
-            self.map.addenemygroup(ScobotWall(800,100,10))
+            self.map.addenemygroup(ScobotWall(400,100,10))
+            self.map.addenemy(Scobot(650,200,20,30))
+            self.map.addenemygroup(ScobotGroup(900,400,5))
