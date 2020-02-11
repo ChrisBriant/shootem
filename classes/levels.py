@@ -3,6 +3,7 @@ from .enemy import *
 from .collidables import *
 from .collectables import *
 from .gamemap import GameMap
+from .screenmessage import CountingText
 import pygame, os
 
 
@@ -17,6 +18,9 @@ class Level():
         self.bg = pygame.Surface((screen["w"], screen["h"]))
         self.leveltrans = False
         self.levelovermessage = OnScreenMessage(70,"")
+        self.killcount = 0
+        #Messages
+        self.enemieskilled = CountingText(26,"EnemiesKilled:",0)
 
 
     def loadlevel(self,levelnumber):
@@ -27,7 +31,7 @@ class Level():
             self.map.gamearea = self.gamearea
             #self.player.rect.x = 100
             #self.player.rect.y = 300
-            self.player.rect.x = 9800
+            self.player.rect.x = 300
             self.player.rect.y = 300
             #Background
             self.bgimage = pygame.image.load(get_file_path("i","bg1.jpg"))

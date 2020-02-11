@@ -95,6 +95,7 @@ class GameMap(pygame.sprite.Sprite):
 
     #Detect a projectile hitting an enemy and perform action
     def updatecollidables(self,onscreensprites):
+        level = kwargs["level"]
         sprites = []
         friendlyprojectiles = [p for p in self.projectiles if not p.enemy]
         for proj in friendlyprojectiles:

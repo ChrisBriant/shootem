@@ -18,21 +18,20 @@ def redrawGameWindow(totalscore):
         print("Here")
         ship.draw(view)
         gameover.draw(view,xoffset,yoffset,screen)
+    elif level.leveltrans == True:
+        #Level transition screen
+        level.levelovermessage.draw(view,xoffset,yoffset,screen)
+        pressanykey.draw(view,0,100,xoffset,yoffset,screen)
     else:
-        if level.leveltrans == True:
-            #Level transition screen
-            level.levelovermessage.draw(view,xoffset,yoffset,screen)
+        if ship.dead:
+            ship.draw(view)
+            deathmessage.draw(view,xoffset,yoffset,screen)
             pressanykey.draw(view,0,100,xoffset,yoffset,screen)
         else:
-            if ship.dead:
-                ship.draw(view)
-                deathmessage.draw(view,xoffset,yoffset,screen)
-                pressanykey.draw(view,0,100,xoffset,yoffset,screen)
-            else:
-                ship.draw(view)
-                onscreensprites = map.getcollidables(xoffset)
-                onscreensprites.draw(view)
-                map.updatecollidables(onscreensprites)
+            ship.draw(view)
+            onscreensprites = map.getcollidables(xoffset)
+            onscreensprites.draw(view)
+            map.updatecollidables(onscreensprites)
     view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
     win.blit(view,(xoffset,yoffset))
 
@@ -81,6 +80,10 @@ while run:
 
     keys = pygame.key.get_pressed()
 
+    #Transition to next level if key pressed
+    if level.leveltrans and any(keys):
+        level.leveltrans = False
+
     #Move player if up, left, or right keys pressed
     ship.moveplayer(keys, screen, gamearea, map,xoffset*-1)
     redrawGameWindow(0)
@@ -91,7 +94,6 @@ while run:
     if ship.catchscreen(xoffset):
         ship.die(map,xoffset)
     #For side scrolling
-    print(ship.rect.x, xoffset)
     if xoffset > 0 - (gamearea["w"]-screen["w"]):
         xoffset -= 1
     #Reset offset if on new level
@@ -106,7 +108,7 @@ while run:
     #If dead then pressing space re-starts game
     if ship.dead:
         #Create new instance of ship -overwrite current instance
-        if keys[pygame.K_SPACE]:
+        if any(keys):
             lives = map.scoreboard.lives
             deathpos = list(ship.deathpos)
             map.player = Player(deathpos[0], deathpos[1], 60,30,lives)
