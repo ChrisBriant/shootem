@@ -15,13 +15,14 @@ def redrawGameWindow(totalscore):
     view.blit(level.bg,(0 - xoffset,0-yoffset))
 
     if ship.dead and ship.lives <= 0:
-        print("Here")
         ship.draw(view)
         gameover.draw(view,xoffset,yoffset,screen)
-    elif level.leveltrans == True:
+    elif level.leveltrans:
         #Level transition screen
         level.levelovermessage.draw(view,xoffset,yoffset,screen)
-        pressanykey.draw(view,0,100,xoffset,yoffset,screen)
+        level.enemieskilled.draw(view,0,50,xoffset,yoffset,screen)
+        level.bonus.draw(view,0,90,xoffset,yoffset,screen)
+        pressanykey.draw(view,0,150,xoffset,yoffset,screen)
     else:
         if ship.dead:
             ship.draw(view)
@@ -31,7 +32,7 @@ def redrawGameWindow(totalscore):
             ship.draw(view)
             onscreensprites = map.getcollidables(xoffset)
             onscreensprites.draw(view)
-            map.updatecollidables(onscreensprites)
+            map.updatecollidables(onscreensprites,level=level)
     view.blit(map.scoreboard.getsurface(),(xoffset*-1,0))
     win.blit(view,(xoffset,yoffset))
 
@@ -81,7 +82,7 @@ while run:
     keys = pygame.key.get_pressed()
 
     #Transition to next level if key pressed
-    if level.leveltrans and any(keys):
+    if level.leveltrans and keys[pygame.K_SPACE]:
         level.leveltrans = False
 
     #Move player if up, left, or right keys pressed
@@ -97,7 +98,7 @@ while run:
     if xoffset > 0 - (gamearea["w"]-screen["w"]):
         xoffset -= 1
     #Reset offset if on new level
-    if ship.newlevel:
+    if ship.newlevel and not level.leveltrans:
         xoffset = 0
         map = level.map
         map.scoreboard.level = level.levelno
@@ -108,7 +109,7 @@ while run:
     #If dead then pressing space re-starts game
     if ship.dead:
         #Create new instance of ship -overwrite current instance
-        if any(keys):
+        if keys[pygame.K_SPACE]:
             lives = map.scoreboard.lives
             deathpos = list(ship.deathpos)
             map.player = Player(deathpos[0], deathpos[1], 60,30,lives)

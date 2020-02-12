@@ -94,7 +94,7 @@ class GameMap(pygame.sprite.Sprite):
         return onscreensprites
 
     #Detect a projectile hitting an enemy and perform action
-    def updatecollidables(self,onscreensprites):
+    def updatecollidables(self,onscreensprites,**kwargs):
         level = kwargs["level"]
         sprites = []
         friendlyprojectiles = [p for p in self.projectiles if not p.enemy]
@@ -103,7 +103,7 @@ class GameMap(pygame.sprite.Sprite):
             hitval = sum([ s.hitval for s in collided if type(s).__name__=="Projectile"])
             for sprite in collided:
                 if sprite.destructable:
-                    sprite.hit(hitval,map=self)
+                    sprite.hit(hitval,map=self,level=level)
                     self.projectiles.remove(proj)
                 sprites.append(sprite)
         #Detect enemies hitting each other

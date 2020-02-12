@@ -42,6 +42,7 @@ class Collidable(pygame.sprite.Sprite):
 
     def hit(self,hitval,**kwargs):
         map = kwargs["map"]
+        level = kwargs["level"]
 
         self.strength -= hitval
         #Not self.dead prevents scoring more than once
@@ -49,6 +50,7 @@ class Collidable(pygame.sprite.Sprite):
             self.dead = True
             map.scoreboard.addscore(self.points)
             map.enemieskilled += 1
+            level.killcount +=1
 
 class Wall(Collidable):
 

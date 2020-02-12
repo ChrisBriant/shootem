@@ -61,15 +61,43 @@ class OnScreenMessage(object):
             self.rgb = newrgb
         #print(text.get_rect())
 
-
-class FlashingText():
+class ScreenText():
 
     def __init__(self,size,message,font="hack",rgb=(250,250,250)):
         self.size = size
         self.rgb = list(rgb)
-        self.alpha =  255
         self.message = message
         self.font = pygame.font.SysFont(font, self.size, True)
+        self.extratext = None
+
+
+    def draw(self,view,posx,posy,xoffset,yoffset,screen):
+        if self.extratext:
+            message = self.message + " " + self.extratext
+        else:
+            message = self.message
+        textwidth, textheight = self.font.size(message)
+        #Get place to draw text
+        #posx and posy are relative to the centre of the screen
+        x= (xoffset*-1)+((screen["w"] - textwidth)//2) + posx
+        y = (yoffset*-1)+(screen["h"]//2)-(textheight//2) + posy
+        self.image = pygame.Surface((textwidth, textheight))
+        self.image.fill((255,255,255))
+        self.image.set_colorkey((255,255,255))
+
+        self.text = self.font.render(message, True, self.rgb)
+        self.image.blit(self.text,(0,0))
+        view.blit(self.image,(x,y))
+
+class FlashingText(ScreenText):
+
+    def __init__(self,size,message,font="hack",rgb=(250,250,250)):
+        ScreenText.__init__(self,size,message,font="hack",rgb=(250,250,250))
+        #self.size = size
+        #self.rgb = list(rgb)
+        self.alpha =  255
+        #self.message = message
+        #self.font = pygame.font.SysFont(font, self.size, True)
         self.textwidth, self.textheight = self.font.size(message)
 
 
@@ -92,34 +120,30 @@ class FlashingText():
         view.blit(self.image,(x,y))
 
 
-class CountingText():
+class CountingText(ScreenText):
 
     def __init__(self,size,message,maxcount,font="hack",rgb=(250,250,250)):
-        self.size = size
-        self.rgb = list(rgb)
-        self.alpha =  255
-        self.message = message
-        self.font = pygame.font.SysFont(font, self.size, True)
-        self.textwidth, self.textheight = self.font.size(message)
+        ScreenText.__init__(self,size,message,font="hack",rgb=(250,250,250))
+        #self.size = size
+        #self.rgb = list(rgb)
+        #self.message = message
+        #self.font = pygame.font.SysFont(font, self.size, True)
         self.counter = 0
         self.maxcount = maxcount
 
 
     def draw(self,view,posx,posy,xoffset,yoffset,screen):
+        message = self.message + " " + str(self.counter)
+        textwidth, textheight = self.font.size(message)
         #Get place to draw text
         #posx and posy are relative to the centre of the screen
-        x= (xoffset*-1)+((screen["w"] - self.textwidth)//2) + posx
-        y = (yoffset*-1)+(screen["h"]//2)-(self.textheight//2) + posy
-
-        self.image = pygame.Surface((self.textwidth, self.textheight))
+        x= (xoffset*-1)+((screen["w"] - textwidth)//2) + posx
+        y = (yoffset*-1)+(screen["h"]//2)-(textheight//2) + posy
+        self.image = pygame.Surface((textwidth, textheight))
         self.image.fill((255,255,255))
         self.image.set_colorkey((255,255,255))
-        self.image.set_alpha(self.alpha)
-        self.alpha = max(0,self.alpha-5)
-        if self.alpha == 5:
-            self.alpha = 255
 
-        self.text = self.font.render(self.message + " " + self.counter, True, self.rgb)
+        self.text = self.font.render(message, True, self.rgb)
         if self.counter < self.maxcount:
             self.counter += 1
         self.image.blit(self.text,(0,0))
