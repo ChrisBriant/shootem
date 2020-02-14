@@ -30,10 +30,14 @@ class WormHole(Collectable):
         self.level.levelovermessage = OnScreenMessage(70,"Level " + str(self.level.levelno) + " complete")
         self.level.leveltrans = True
         self.level.enemieskilled.maxcount = self.level.killcount
+        #Create bonus
         if self.level.killcount >= 50 and self.level.killcount <= 100:
+            self.level.bonusval = 1000
             self.level.bonus.extratext = str(1000)
         elif self.level.killcount > 100 and self.level.killcount <= 200:
+            self.level.bonusval = 1000
             self.level.bonus.extratext = str(3000)
+        self.level.scoretext.extratext = str(self.level.score + 3000)
 
     def move(self,**kwargs):
         self.image.fill((255,255,255))

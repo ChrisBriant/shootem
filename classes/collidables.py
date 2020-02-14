@@ -49,6 +49,7 @@ class Collidable(pygame.sprite.Sprite):
         if self.strength <=0 and not self.dead:
             self.dead = True
             map.scoreboard.addscore(self.points)
+            level.score += self.points
             map.enemieskilled += 1
             level.killcount +=1
 

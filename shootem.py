@@ -21,7 +21,9 @@ def redrawGameWindow(totalscore):
         #Level transition screen
         level.levelovermessage.draw(view,xoffset,yoffset,screen)
         level.enemieskilled.draw(view,0,50,xoffset,yoffset,screen)
-        level.bonus.draw(view,0,90,xoffset,yoffset,screen)
+        if level.enemieskilled.done:
+            level.bonus.draw(view,0,90,xoffset,yoffset,screen)
+            level.scoretext.draw(view,0,130,xoffset,yoffset,screen)
         pressanykey.draw(view,0,150,xoffset,yoffset,screen)
     else:
         if ship.dead:
@@ -83,6 +85,7 @@ while run:
 
     #Transition to next level if key pressed
     if level.leveltrans and keys[pygame.K_SPACE]:
+        map.scoreboard.addscore(level.bonusval)
         level.leveltrans = False
 
     #Move player if up, left, or right keys pressed
@@ -100,7 +103,9 @@ while run:
     #Reset offset if on new level
     if ship.newlevel and not level.leveltrans:
         xoffset = 0
+        oldscoreboard = map.scoreboard
         map = level.map
+        map.scoreboard = oldscoreboard
         map.scoreboard.level = level.levelno
         ship.newlevel = False
 

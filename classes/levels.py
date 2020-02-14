@@ -22,6 +22,9 @@ class Level():
         #Messages
         self.enemieskilled = CountingText(26,"EnemiesKilled:",0)
         self.bonus = ScreenText(26,"Bonus:")
+        self.scoretext = ScreenText(26,"Score:")
+        self.bonusval = 0
+        self.score = 0
 
 
     def loadlevel(self,levelnumber):

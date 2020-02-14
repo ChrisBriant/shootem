@@ -89,6 +89,7 @@ class ScreenText():
         self.image.blit(self.text,(0,0))
         view.blit(self.image,(x,y))
 
+
 class FlashingText(ScreenText):
 
     def __init__(self,size,message,font="hack",rgb=(250,250,250)):
@@ -130,6 +131,7 @@ class CountingText(ScreenText):
         #self.font = pygame.font.SysFont(font, self.size, True)
         self.counter = 0
         self.maxcount = maxcount
+        self.done = False
 
 
     def draw(self,view,posx,posy,xoffset,yoffset,screen):
@@ -146,5 +148,7 @@ class CountingText(ScreenText):
         self.text = self.font.render(message, True, self.rgb)
         if self.counter < self.maxcount:
             self.counter += 1
+        else:
+            self.done = True
         self.image.blit(self.text,(0,0))
         view.blit(self.image,(x,y))
