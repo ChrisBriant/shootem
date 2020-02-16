@@ -1,7 +1,7 @@
 # shootem
 Shoot-em-up game for Pygame engine
 
-This is my attempt at learning to develop a game using the PyGame engine.
+This is my attempt at learning to develop a game using the PyGame engine. I am new to games programming and am sure that there are much better ways of doing what I have done. Let me know if you have any constructive advice, I'm interested in what I can learn from others.
 
 Feel free to fork this and do whatever you want with the code, completely re-write it if you want. I hope this is of any use to anyone wishing to create a game and needs a template. I'd be very interested in any suggestions people have and to see what they can create using the existing code.
 
