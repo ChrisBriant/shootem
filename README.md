@@ -8,9 +8,9 @@ Feel free to fork this and do whatever you want with the code, completely re-wri
 Instructions for Setting Up
 
 1. Install Python3 for your system
-  Windows: https://phoenixnap.com/kb/how-to-install-python-3-windows
-  Mac: https://docs.python-guide.org/starting/install3/osx/
-  Linux (Ubuntu): https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-local-programming-environment-on-ubuntu-16-04
+  -Windows: https://phoenixnap.com/kb/how-to-install-python-3-windows
+  -Mac: https://docs.python-guide.org/starting/install3/osx/
+  -Linux (Ubuntu): https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-local-programming-environment-on-ubuntu-16-04
   
   2. Clone this repository
   
