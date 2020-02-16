@@ -24,7 +24,7 @@ def redrawGameWindow(totalscore):
         if level.enemieskilled.done:
             level.bonus.draw(view,0,90,xoffset,yoffset,screen)
             level.scoretext.draw(view,0,130,xoffset,yoffset,screen)
-        pressanykey.draw(view,0,150,xoffset,yoffset,screen)
+        pressanykey.draw(view,0,170,xoffset,yoffset,screen)
     else:
         if ship.dead:
             ship.draw(view)
@@ -89,7 +89,8 @@ while run:
         level.leveltrans = False
 
     #Move player if up, left, or right keys pressed
-    ship.moveplayer(keys, screen, gamearea, map,xoffset*-1)
+    if not level.leveltrans:
+        ship.moveplayer(keys, screen, gamearea, map,xoffset*-1)
     redrawGameWindow(0)
     #Detect collidion
     if map.collision():

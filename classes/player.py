@@ -68,7 +68,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.initcount >= 100:
             #Blank out for testing -make permanently invulnerable
-            #self.init = False
+            self.init = False
             self.alpha = 255
         else:
             self.initcount += 1
@@ -222,4 +222,3 @@ class Player(pygame.sprite.Sprite):
             if self.rect.x < xoffset*-1:
                 self.rect.x += 10 + self.width
             self.deathpos = (self.rect.x,self.rect.y)
-            print("Hit!")

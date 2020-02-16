@@ -18,7 +18,7 @@ class Level():
         self.bg = pygame.Surface((screen["w"], screen["h"]))
         self.leveltrans = False
         self.levelovermessage = OnScreenMessage(70,"")
-        self.killcount = 100
+        self.killcount = 0
         #Messages
         self.enemieskilled = CountingText(26,"EnemiesKilled:",0)
         self.bonus = ScreenText(26,"Bonus:")
@@ -33,9 +33,7 @@ class Level():
             #Define level 1
             self.gamearea = {"w":10000,"h":600}
             self.map.gamearea = self.gamearea
-            #self.player.rect.x = 100
-            #self.player.rect.y = 300
-            self.player.rect.x = 9500
+            self.player.rect.x = 100
             self.player.rect.y = 300
             #Background
             self.bgimage = pygame.image.load(get_file_path("i","bg1.jpg"))
